@@ -12,8 +12,10 @@ android {
         applicationId = "app.luma.gallery"
         minSdk = 29 // RELATIVE_PATH (albums by folder) and scoped storage
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.3.0"
+        // ML Kit's on-device models are native code: only 64-bit ARM phones (all recent ones), so the APK stays small.
+        ndk { abiFilters += "arm64-v8a" }
     }
     buildFeatures { compose = true }
     buildTypes {
@@ -29,6 +31,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+    // Phone app built for 64-bit ARM only (see abiFilters); ChromeOS/x86 would add ~23 MB of ML Kit code.
+    lint { disable += "ChromeOsAbiSupport" }
     testOptions {
         unitTests.isIncludeAndroidResources = true
         // Screenshots of the screens land in app/build/screenshots (compare them with design/concepto.png).
@@ -47,6 +51,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("io.coil-kt:coil-video:2.7.0")
+    // On-device only (bundled models, no internet): what a photo shows and the text inside it.
+    implementation("com.google.mlkit:image-labeling:17.0.9")
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.11.0")
+    // Indexing runs in the background while charging with the screen off.
+    implementation("androidx.work:work-runtime-ktx:2.12.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.18")
     testImplementation("androidx.compose.ui:ui-test-junit4")

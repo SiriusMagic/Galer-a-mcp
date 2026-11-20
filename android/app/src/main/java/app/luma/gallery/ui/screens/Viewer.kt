@@ -9,42 +9,39 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.PlayCircle
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import app.luma.gallery.R
 import app.luma.gallery.data.Media
+import app.luma.gallery.index.Facts
 import app.luma.gallery.ui.theme.LumaColors
 import coil.compose.AsyncImage
+import java.text.DateFormat
+import java.util.Date
 
 /** What the viewer's buttons do; the screen only reports them. */
 class ViewerActions(val favorite: (Media) -> Unit, val share: (Media) -> Unit, val edit: (Media) -> Unit,
-    val delete: ((Media) -> Unit)?, val play: (Media) -> Unit)
+    val delete: ((Media) -> Unit)?, val play: (Media) -> Unit, val wallpaper: (Media) -> Unit = {},
+    val copy: (Media) -> Unit = {}, val openWith: (Media) -> Unit = {})
 
-/** Full screen, black, swipe between items; back, and favorite · share · edit · delete at the bottom (as in the concept). */
-@Composable fun Viewer(items: List<Media>, start: Media, favorites: Set<String>, actions: ViewerActions,
+/** Full screen, black, swipe between items; date on top; share · heart · edit · delete · more at the bottom. */
+@Composable fun Viewer(items: List<Media>, start: Media, favorites: Set<String>, facts: Map<String, Facts>, actions: ViewerActions,
     onShowing: (Media) -> Unit, onClose: () -> Unit) {
     val first = items.indexOfFirst { it.key == start.key }.coerceAtLeast(0)
     val pager = rememberPagerState(first) { items.size }
+    var menu by remember { mutableStateOf(false) }
+    var details by remember { mutableStateOf(false) }
     LaunchedEffect(pager, items) { snapshotFlow { pager.currentPage }.collect { items.getOrNull(it)?.let(onShowing) } }
     Dialog(onClose, DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
         Box(Modifier.fillMaxSize().background(Color.Black)) {
@@ -57,27 +54,44 @@ class ViewerActions(val favorite: (Media) -> Unit, val share: (Media) -> Unit, v
                 }
             }
             val item = items.getOrNull(pager.currentPage) ?: start
-            Row(Modifier.fillMaxWidth().systemBarsPadding().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClose, Modifier.clip(CircleShape).background(Color.Black.copy(alpha = .45f))) {
+            Row(Modifier.fillMaxWidth().background(Color.Black.copy(alpha = .45f)).statusBarsPadding().padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClose, Modifier.clip(CircleShape).background(Color.White.copy(alpha = .12f))) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back), tint = Color.White)
                 }
-                Text(item.name, Modifier.weight(1f).padding(horizontal = 12.dp), color = Color.White, maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
+                Column(Modifier.padding(start = 16.dp)) {
+                    Text(DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(item.takenAt)), color = Color.White, fontSize = 20.sp)
+                    Text(DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(item.takenAt)), color = Color.White.copy(alpha = .7f), fontSize = 14.sp)
+                }
             }
             Row(Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(16.dp).fillMaxWidth()
-                .clip(RoundedCornerShape(28.dp)).background(Color.Black.copy(alpha = .55f)).padding(vertical = 4.dp),
+                .clip(RoundedCornerShape(32.dp)).background(Color(0xFF1E1E1E).copy(alpha = .9f)).padding(vertical = 6.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly) {
                 val fav = item.key in favorites
+                Bar(Icons.Default.Share, R.string.share) { actions.share(item) }
                 IconButton({ actions.favorite(item) }) {
                     Icon(if (fav) Icons.Default.Favorite else Icons.Default.FavoriteBorder, stringResource(R.string.favorite),
-                        tint = if (fav) LumaColors.Heart else Color.White)
+                        Modifier.size(28.dp), tint = if (fav) LumaColors.Heart else Color.White)
                 }
-                IconButton({ actions.share(item) }) { Icon(Icons.Default.Share, stringResource(R.string.share), tint = Color.White) }
-                IconButton({ actions.edit(item) }) { Icon(Icons.Default.Edit, stringResource(R.string.edit), tint = Color.White) }
-                actions.delete?.let { delete ->
-                    IconButton({ delete(item) }) { Icon(Icons.Default.Delete, stringResource(R.string.delete), tint = Color.White) }
+                Bar(Icons.Default.Edit, R.string.edit) { actions.edit(item) }
+                actions.delete?.let { delete -> Bar(Icons.Default.Delete, R.string.delete) { delete(item) } }
+                Box {
+                    Bar(Icons.Default.MoreVert, R.string.more) { menu = true }
+                    DropdownMenu(menu, { menu = false }) {
+                        Item(R.string.details) { menu = false; details = true }
+                        if (!item.isVideo) Item(R.string.wallpaper) { menu = false; actions.wallpaper(item) }
+                        Item(R.string.copy_clipboard) { menu = false; actions.copy(item) }
+                        Item(R.string.open_with) { menu = false; actions.openWith(item) }
+                    }
                 }
             }
+            if (details) DetailsDialog(item, facts[item.key]) { details = false }
         }
     }
 }
+
+@Composable private fun Bar(icon: androidx.compose.ui.graphics.vector.ImageVector, label: Int, onClick: () -> Unit) {
+    IconButton(onClick) { Icon(icon, stringResource(label), Modifier.size(28.dp), tint = Color.White) }
+}
+
+@Composable private fun Item(label: Int, onClick: () -> Unit) = DropdownMenuItem({ Text(stringResource(label)) }, onClick)

@@ -15,10 +15,17 @@ data class Media(
     val size: Long = 0,
     val width: Int = 0,
     val height: Int = 0,
+    /** Videos only. */
+    val durationMs: Long = 0,
+    /** When it was taken (ms); falls back to when it was added. */
+    val takenAt: Long = dateAdded * 1000,
 ) {
     /** Unique across photos and videos (MediaStore ids are shared by both tables). */
     val key: String get() = "${if (isVideo) "v" else "i"}$id"
 }
 
-/** An album of the Álbumes tab: a folder, or the special «Favoritas». */
-data class Album(val name: String, val count: Int, val cover: Media?, val favorites: Boolean = false)
+/** Built-in albums first (Todas, Cámara, Videos, Capturas, Favoritas), then «Más álbumes» (one per folder). */
+enum class AlbumKind { ALL, CAMERA, VIDEOS, SCREENSHOTS, FAVORITES, FOLDER }
+
+/** [id] is the folder name for FOLDER, or "@kind" for a built-in album (so a folder called «Videos» never clashes). */
+data class Album(val id: String, val name: String, val count: Int, val cover: Media?, val kind: AlbumKind = AlbumKind.FOLDER)

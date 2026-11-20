@@ -4,16 +4,15 @@
 ChatGPT…) pueda **buscar tus fotos sin verlas**: Luma guarda en el teléfono una descripción de cada imagen en forma de
 **vectores** y la IA pregunta por texto («la foto del perro en la playa»), igual que Stone ofrece su música por MCP.
 
-## Estado (0.2.0)
+## Estado (0.3.0)
 
-- Fotos (cuadrícula de 3), Álbumes (por carpeta, con «Favoritas» primero) y Buscar (por nombre o álbum).
-- Visor a pantalla completa: deslizar entre fotos, favorita, compartir, editar con otra app y **borrar con la
-  confirmación de Android**. Los videos se abren en el reproductor del teléfono.
-- Solo permiso de **leer fotos y videos** (en Android 14+ puede ser solo una selección). Sin internet, sin anuncios,
-  sin copias en la nube.
-- Español e inglés; tema claro y oscuro con los colores del concepto (`design/concepto.png`).
+- **Búsqueda inteligente:** cada foto se analiza en el teléfono (ML Kit, sin internet): qué aparece y qué texto tiene.
+  Se guarda como un vector local y se busca en español («perro en la playa», «recibo», «cumpleaños»).
+- Fotos por día con duración de videos, selección múltiple, álbumes (Todas, Favoritos, Cámara, Videos, Capturas y
+  Más álbumes), Eliminado recientemente con restaurar, visor con menú ⋮ y Detalles, y Ajustes.
+- Solo permiso de **leer fotos y videos**. **Sin internet**, sin anuncios, sin copias en la nube.
 
-APK: [`android/Luma-0.2.0.apk`](android/Luma-0.2.0.apk) (`app.luma.gallery`, firmado como Stone y Gateway Hub).
+APK: [`android/Luma-0.3.0.apk`](android/Luma-0.3.0.apk) (`app.luma.gallery`, 64 bits, firmado como Stone y Gateway Hub).
 
 ## Compilar y probar
 

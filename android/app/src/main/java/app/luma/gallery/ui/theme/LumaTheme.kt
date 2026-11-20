@@ -20,8 +20,8 @@ object LumaColors {
 
 @Composable fun LumaTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (dark) darkColorScheme(primary = LumaColors.NightSage, secondaryContainer = Color(0xFF2C3A2A),
-        background = LumaColors.Night, surface = LumaColors.Night, onBackground = Color(0xFFE6E8E3), onSurface = Color(0xFFE6E8E3))
+        background = LumaColors.Night, surface = LumaColors.Night, surfaceContainerHigh = Color(0xFF242823), onBackground = Color(0xFFE6E8E3), onSurface = Color(0xFFE6E8E3))
     else lightColorScheme(primary = LumaColors.Sage, secondaryContainer = LumaColors.PaleSage,
-        background = LumaColors.Canvas, surface = LumaColors.Canvas, onBackground = LumaColors.Ink, onSurface = LumaColors.Ink)
+        background = LumaColors.Canvas, surface = LumaColors.Canvas, surfaceContainerHigh = Color(0xFFECEFE6), onBackground = LumaColors.Ink, onSurface = LumaColors.Ink)
     MaterialTheme(colorScheme = colors, content = content)
 }

@@ -1,34 +1,55 @@
 package app.luma.gallery.data
 
-/**
- * Pure rules over the loaded media (no Android calls, so they are unit tested): albums, search and filters.
- * Favorites are keyed by [Media.key].
- */
-object Library {
-    const val FAVORITES = "Favoritas"
-    const val OTHERS = "Otros"
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
-    /** «Favoritas» first (only when there is one), then each folder by name, each with its newest item as cover. */
-    fun albums(media: List<Media>, favorites: Set<String>): List<Album> {
-        val favs = media.filter { it.key in favorites }
-        val folders = media.groupBy { it.folder.ifBlank { OTHERS } }
-            .map { (name, items) -> Album(name, items.size, items.maxByOrNull { it.dateAdded }) }
-            .sortedBy { it.name.lowercase() }
-        return (if (favs.isEmpty()) emptyList() else listOf(Album(FAVORITES, favs.size, favs.maxByOrNull { it.dateAdded }, true))) + folders
+/** Pure rules over the loaded media (no Android calls, so they are unit tested). Favorites are keyed by [Media.key]. */
+object Library {
+    const val OTHERS = "Otros"
+    fun builtIn(kind: AlbumKind) = "@" + kind.name.lowercase()
+
+    fun isCamera(m: Media) = m.folder.equals("Camera", true) || m.folder.equals("DCIM", true)
+    fun isScreenshot(m: Media) = m.folder.contains("screenshot", true) || m.folder.contains("captura", true)
+
+    /** Built-in albums (Todas always, then Favoritas…, only those with something in them) and the folders, biggest first. */
+    fun albums(media: List<Media>, favorites: Set<String>): Pair<List<Album>, List<Album>> {
+        fun album(kind: AlbumKind, items: List<Media>) = Album(builtIn(kind), kind.name, items.size, items.maxByOrNull { it.takenAt }, kind)
+        val pinned = listOf(album(AlbumKind.ALL, media)) + listOf(
+            AlbumKind.FAVORITES to media.filter { it.key in favorites }, AlbumKind.CAMERA to media.filter(::isCamera),
+            AlbumKind.VIDEOS to media.filter { it.isVideo }, AlbumKind.SCREENSHOTS to media.filter(::isScreenshot),
+        ).filter { it.second.isNotEmpty() }.map { (kind, items) -> album(kind, items) }
+        val more = media.filterNot { isCamera(it) || isScreenshot(it) }.groupBy { it.folder.ifBlank { OTHERS } }
+            .map { (name, items) -> Album(name, name, items.size, items.maxByOrNull { it.takenAt }) }
+            .sortedWith(compareByDescending<Album> { it.count }.thenBy { it.name.lowercase() })
+        return pinned to more
     }
 
     /** Items of one album ([album] null = all), matching [query] in the name or folder, newest first. */
-    fun filter(media: List<Media>, favorites: Set<String>, album: String?, query: String): List<Media> {
+    fun filter(media: List<Media>, favorites: Set<String>, album: String?, query: String = ""): List<Media> {
         val words = query.trim().lowercase().split(Regex("\\s+")).filter { it.isNotEmpty() }
         return media.filter { item ->
             val inAlbum = when (album) {
-                null -> true
-                FAVORITES -> item.key in favorites
+                null, builtIn(AlbumKind.ALL) -> true
+                builtIn(AlbumKind.CAMERA) -> isCamera(item)
+                builtIn(AlbumKind.VIDEOS) -> item.isVideo
+                builtIn(AlbumKind.SCREENSHOTS) -> isScreenshot(item)
+                builtIn(AlbumKind.FAVORITES) -> item.key in favorites
                 else -> item.folder.ifBlank { OTHERS } == album
             }
             val text = "${item.name} ${item.folder}".lowercase()
             inAlbum && words.all { it in text }
-        }.sortedByDescending { it.dateAdded }
+        }.sortedByDescending { it.takenAt }
+    }
+
+    /** The Fotos tab: one section per day, newest first. */
+    fun byDay(media: List<Media>, zone: ZoneId = ZoneId.systemDefault()): List<Pair<LocalDate, List<Media>>> =
+        media.sortedByDescending { it.takenAt }.groupBy { Instant.ofEpochMilli(it.takenAt).atZone(zone).toLocalDate() }.toList()
+
+    /** «01:09» or «1:02:03». */
+    fun duration(ms: Long): String {
+        val s = ms / 1000
+        return if (s >= 3600) "%d:%02d:%02d".format(s / 3600, s / 60 % 60, s % 60) else "%02d:%02d".format(s / 60, s % 60)
     }
 
     fun toggle(favorites: Set<String>, item: Media): Set<String> =
