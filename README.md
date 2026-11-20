@@ -4,7 +4,7 @@
 ChatGPT…) pueda **buscar tus fotos sin verlas**: Luma guarda en el teléfono una descripción de cada imagen en forma de
 **vectores** y la IA pregunta por texto («la foto del perro en la playa»), igual que Stone ofrece su música por MCP.
 
-## Estado (0.6.0)
+## Estado (0.6.1)
 
 - **Búsqueda inteligente:** cada foto se analiza en el teléfono (ML Kit, sin internet): qué aparece y qué texto tiene.
   Se guarda como un vector local y se busca en español («perro en la playa», «recibo», «cumpleaños»).
@@ -16,7 +16,7 @@ ChatGPT…) pueda **buscar tus fotos sin verlas**: Luma guarda en el teléfono u
 - Temas, pellizcar por meses/años, deslizar para seleccionar, videos dentro de Luma y «Abrir con» con Stone primero.
 - Solo permiso de **leer fotos y videos**; internet solo para el Modo MCP (apagado por defecto). Sin anuncios.
 
-APK: [`android/Luma-0.6.0.apk`](android/Luma-0.6.0.apk) (`app.luma.gallery`, 64 bits, firmado como Stone y Gateway Hub).
+APK: [`android/Luma-0.6.1.apk`](android/Luma-0.6.1.apk) (`app.luma.gallery`, 64 bits, firmado como Stone y Gateway Hub).
 
 ## Compilar y probar
 

@@ -1,3 +1,9 @@
+# Luma 0.6.1
+
+- **Ícono nuevo:** fotos apiladas con un atardecer sobre las montañas, en un marco luminoso morado y azul. El marco sigue
+  la forma del lanzador (redonda o cuadrada); con los íconos temáticos de Android 13+ se usa la versión de un color.
+- 23 pruebas.
+
 # Luma 0.6.0
 
 - **Los videos se ven:** las miniaturas de video ya se dibujan (faltaba el decodificador de fotogramas) y el ▶ del visor
