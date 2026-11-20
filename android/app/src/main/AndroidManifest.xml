@@ -5,9 +5,12 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <!-- ML Kit's models are inside the app; its usage reports would need Internet, so Luma removes it: nothing leaves. -->
-    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+    <!-- Internet only for Modo MCP (off by default), through the relay. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+    <!-- «Redireccionar a Hub»: only apps signed with the same key (Gateway Hub) get this permission. -->
+    <permission android:name="com.zirakusa.gatewayhub.permission.LINK" android:protectionLevel="signature"
+        android:label="@string/hub_link_permission" />
 
     <application
         android:allowBackup="false"
@@ -22,6 +25,20 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Gateway Hub's scanner finds Luma (module gallery_) and its link channel. Being found turns nothing on. -->
+            <intent-filter>
+                <action android:name="com.zirakusa.gatewayhub.action.APP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data android:name="com.zirakusa.gatewayhub.module" android:value="gallery_" />
+            <meta-data android:name="com.zirakusa.gatewayhub.link" android:value="${applicationId}.hublink" />
         </activity>
+        <!-- ML Kit's usage reports to Google: their only destination (the «cct» backend) is removed, so with Internet
+             on for Modo MCP they still never leave the phone. Recognition itself runs on the phone and is not affected. -->
+        <service android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery" tools:node="merge">
+            <meta-data android:name="backend:com.google.android.datatransport.cct.CctBackendFactory" tools:node="remove" />
+        </service>
+        <provider android:name=".mcp.HubLinkProvider" android:authorities="${applicationId}.hublink"
+            android:exported="true" android:permission="com.zirakusa.gatewayhub.permission.LINK" />
     </application>
 </manifest>

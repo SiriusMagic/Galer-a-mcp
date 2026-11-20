@@ -24,6 +24,7 @@ import app.luma.gallery.data.MediaStoreSource
 import app.luma.gallery.data.MediaWriter
 import app.luma.gallery.data.Vault
 import app.luma.gallery.index.IndexWorker
+import app.luma.gallery.mcp.McpMode
 import app.luma.gallery.index.SqlFacts
 import app.luma.gallery.ui.GalleryActions
 import app.luma.gallery.ui.GalleryState
@@ -45,6 +46,7 @@ class MainActivity : FragmentActivity() {
         val writer = MediaWriter(this)
         val vault = Vault(this, writer)
         IndexWorker.schedule(this)
+        McpMode.load(this)
         val appearance = Appearance(this)
         setContent {
             var mode by remember { mutableStateOf(appearance.mode) }
@@ -52,7 +54,11 @@ class MainActivity : FragmentActivity() {
             val dark = mode == ThemeMode.DARK || (mode == ThemeMode.SYSTEM && androidx.compose.foundation.isSystemInDarkTheme())
             LumaTheme(dark, accent) {
                 val state = remember { GalleryState(favorites.read(), favorites::write) }
-                DisposableEffect(state) { lockOnStop = state::lockVault; onDispose { lockOnStop = null } }
+                DisposableEffect(state) {
+                    lockOnStop = state::lockVault
+                    McpMode.onFavorites = { keys -> runOnUiThread { state.showFavorites(keys) } }
+                    onDispose { lockOnStop = null; McpMode.onFavorites = {} }
+                }
                 val scope = rememberCoroutineScope()
                 var granted by remember { mutableStateOf(MediaAccess.granted(this)) }
                 fun reload() = scope.launch {
@@ -124,10 +130,27 @@ class MainActivity : FragmentActivity() {
                     openVault = { VaultLock.ask(this, { state.unlockVault() }) { say(getString(R.string.vault_needs_lock)) } },
                     unhide = { list -> scope.launch { vault.restore(list).let { n -> say(resources.getQuantityString(R.plurals.unhidden, n, n)) }; reload() } },
                     eraseHidden = { list -> scope.launch { vault.erase(list); reload() } },
+                    copyLink = { link ->
+                        getSystemService(android.content.ClipboardManager::class.java)
+                            ?.setPrimaryClip(android.content.ClipData.newPlainText("Luma MCP", link))
+                        say(getString(R.string.copied))
+                    },
+                    goToHub = {
+                        getSystemService(android.content.ClipboardManager::class.java)
+                            ?.setPrimaryClip(android.content.ClipData.newPlainText("Luma › Gateway Hub", McpMode.hubLink()))
+                        val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
+                        if (open != null) startActivity(open) else say(getString(R.string.mcp_paste_in_hub))
+                    },
                     indexNow = { IndexWorker.runNow(this) },
                     stopIndex = { IndexWorker.stop(this) },
                     clearIndex = { scope.launch { withContext(Dispatchers.IO) { facts.clear() }; reload() } },
                 ), IndexStatus(state.facts.size.coerceAtMost(state.media.size), state.media.size, running), BuildConfigVersion.name(this)) {
+                    Group(androidx.compose.ui.res.stringResource(R.string.mcp_title)) {
+                        androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.mcp_settings_hint))
+                        androidx.compose.material3.Button({ state.go(app.luma.gallery.ui.Page.MCP) }) {
+                            androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.mcp_open))
+                        }
+                    }
                     Group(androidx.compose.ui.res.stringResource(R.string.theme)) {
                         ThemePicker(mode, accent, { mode = it; appearance.mode = it }, { accent = it; appearance.accent = it })
                     }

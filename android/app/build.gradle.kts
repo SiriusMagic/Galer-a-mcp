@@ -12,12 +12,15 @@ android {
         applicationId = "app.luma.gallery"
         minSdk = 29 // RELATIVE_PATH (albums by folder) and scoped storage
         targetSdk = 36
-        versionCode = 4
-        versionName = "0.4.0"
+        versionCode = 5
+        versionName = "0.5.0"
         // ML Kit's on-device models are native code: only 64-bit ARM phones (all recent ones), so the APK stays small.
         ndk { abiFilters += "arm64-v8a" }
+        // Modo MCP: the same public relay as Stone (one device id per app). Empty = no MCP over the internet.
+        val relayUrl = (project.findProperty("lumaRelayUrl") as String?).orEmpty().trimEnd('/')
+        buildConfigField("String", "RELAY_URL", "\"$relayUrl\"")
     }
-    buildFeatures { compose = true }
+    buildFeatures { compose = true; buildConfig = true }
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -59,6 +62,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.12.0")
     // Bóveda: the phone's own lock (fingerprint, face, PIN…).
     implementation("androidx.biometric:biometric:1.1.0")
+    // Modo MCP: WebSocket to the relay (same library and version as Stone).
+    implementation("com.squareup.okhttp3:okhttp:5.3.2")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.18")
     testImplementation("androidx.compose.ui:ui-test-junit4")

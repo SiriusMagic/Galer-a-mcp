@@ -23,6 +23,9 @@ class GalleryActions(
     val openVault: () -> Unit = {},
     val unhide: (List<app.luma.gallery.data.Hidden>) -> Unit = {},
     val eraseHidden: (List<app.luma.gallery.data.Hidden>) -> Unit = {},
+    /** Modo MCP: copy a link (never shown whole) and open the Gateway Hub app. */
+    val copyLink: (String) -> Unit = {},
+    val goToHub: () -> Unit = {},
     val indexNow: () -> Unit = {},
     val stopIndex: () -> Unit = {},
     val clearIndex: () -> Unit = {},

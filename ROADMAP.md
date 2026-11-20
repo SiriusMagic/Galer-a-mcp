@@ -1,6 +1,6 @@
 # Hoja de ruta de Luma
 
-## Fase 2 · Modo MCP (como Stone)
+## Fase 2 · Modo MCP (como Stone) — hecho en 0.5.0
 - Ajustes › **Modo MCP**: Activar MCP, Crear token (LLM o Hub, uso, validez, modo y herramientas), Analítica y
   **Redireccionar a Hub** (el hub administra todo).
 - Herramientas `gallery_*`: buscar, listar álbumes, ver datos de una foto (fecha, tamaño, carpeta, descripción),

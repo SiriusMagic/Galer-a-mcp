@@ -12,7 +12,7 @@ import app.luma.gallery.data.Media
 import app.luma.gallery.index.ContentSearch
 import app.luma.gallery.index.Facts
 
-enum class Page { PHOTOS, ALBUMS, MEMORIES, SEARCH, TRASH, VAULT, SETTINGS }
+enum class Page { PHOTOS, ALBUMS, MEMORIES, SEARCH, TRASH, VAULT, SETTINGS, MCP }
 
 /** The one owner of what the screens show; screens read it and call its actions. */
 class GalleryState(favorites: Set<String> = emptySet(), private val saveFavorites: (Set<String>) -> Unit = {}) {
@@ -44,6 +44,8 @@ class GalleryState(favorites: Set<String> = emptySet(), private val saveFavorite
         viewing = viewing?.let { v -> items.firstOrNull { it.key == v.key } }
         selected = selected.filterTo(HashSet()) { key -> items.any { it.key == key } || trashed.any { it.key == key } }
     }
+    /** Favorites changed elsewhere (an AI through Modo MCP). */
+    fun showFavorites(keys: Set<String>) { favorites = keys }
     fun showFacts(all: List<Facts>) { facts = all.associateBy { it.key } }
     fun showHidden(items: List<Hidden>) { hidden = items; vaultPicked = vaultPicked.filterTo(HashSet()) { id -> items.any { it.id == id } } }
     fun unlockVault() { vaultOpen = true; page = Page.VAULT; selected = emptySet() }
@@ -100,6 +102,7 @@ class GalleryState(favorites: Set<String> = emptySet(), private val saveFavorite
         target != null -> { target = null; page = Page.ALBUMS; true }
         memory != null -> { memory = null; true }
         page == Page.VAULT -> { lockVault(); true }
+        page == Page.MCP -> { page = Page.SETTINGS; true }
         album != null -> { album = null; page = Page.ALBUMS; true }
         page == Page.TRASH -> { page = Page.ALBUMS; true }
         page != Page.PHOTOS -> { page = Page.PHOTOS; true }

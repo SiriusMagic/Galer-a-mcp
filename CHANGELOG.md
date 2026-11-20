@@ -1,3 +1,17 @@
+# Luma 0.5.0
+
+- **Modo MCP** (Ajustes › Modo MCP), como en Stone: Activar MCP, **Crear token** (LLM o Hub, uso, solo lectura o
+  lectura y escritura, validez), pausar, revocar y **Redireccionar a Hub** («Ir al Hub»; Gateway Hub vincula Luma sola).
+  Tu IA busca en tus fotos sin verlas: herramientas `gallery_search`, `gallery_recent`, `gallery_albums`, `gallery_info`,
+  `gallery_stats` y `gallery_favorite`. Nunca recibe la imagen, ni puede borrar o mover.
+- Llega por el mismo relay que Stone (enlace `…/d/<luma>/mcp?token=lum_…`); en el hub aparece como `gallery_`.
+- Internet solo para el Modo MCP (apagado por defecto); las estadísticas de uso de ML Kit quedan bloqueadas.
+- **Íconos y textos blancos en modo oscuro** (salían negros).
+- **Temas:** Sistema, Claro u Oscuro y cinco colores.
+- **Pellizcar** en Fotos agrupa por meses y otra vez por años; abrir los dedos vuelve.
+- **Deslizar para seleccionar:** mantén pulsada una foto y pasa el dedo por otras.
+- 21 pruebas (incluye el MCP: tokens, herramientas, errores, límites y el enlace al hub).
+
 # Luma 0.4.0
 
 - **Nuevo álbum (+)** en Álbumes: le pones nombre, eliges las fotos y decides **Mover** o **Copiar**.
