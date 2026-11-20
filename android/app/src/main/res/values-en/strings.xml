@@ -64,4 +64,44 @@
     <string name="detail_text">Text in the image</string>
     <string name="detail_not_yet">Not analyzed yet</string>
     <string name="detail_nothing">Nothing recognizable</string>
+    <string name="memories">Memories</string>
+    <string name="memories_empty">No memories yet. They appear with more photos and once the smart search analyzes them.</string>
+    <string name="memory_on_this_day">On this day · %1$d</string>
+    <string name="new_album">New album</string>
+    <string name="new_album_name">Album name</string>
+    <string name="to_album">Move or copy to an album</string>
+    <string name="pick_photos">Pick photos</string>
+    <string name="pick_for">For “%1$s”</string>
+    <string name="move">Move</string>
+    <string name="copy">Copy</string>
+    <string name="hide">Hide</string>
+    <string name="unhide">Restore</string>
+    <string name="export_pdf">Export to PDF</string>
+    <string name="vault">Vault</string>
+    <string name="vault_unlock">Confirm it is you to open what you hid</string>
+    <string name="vault_hint">Only you see it. Tap to pick; then restore or delete forever.</string>
+    <string name="vault_empty">What you hide (⋮ › Hide) appears here.</string>
+    <string name="vault_needs_lock">Set a screen lock on the phone to use the Vault.</string>
+    <string name="pdf_done">PDF saved in Documents/Luma</string>
+    <string name="pdf_failed">Could not create the PDF (videos are not exported)</string>
+    <plurals name="photos_count">
+        <item quantity="one">%d photo</item>
+        <item quantity="other">%d photos</item>
+    </plurals>
+    <plurals name="moved">
+        <item quantity="one">%1$d moved to “%2$s”</item>
+        <item quantity="other">%1$d moved to “%2$s”</item>
+    </plurals>
+    <plurals name="copied_to">
+        <item quantity="one">%1$d copied to “%2$s”</item>
+        <item quantity="other">%1$d copied to “%2$s”</item>
+    </plurals>
+    <plurals name="hidden_done">
+        <item quantity="one">%1$d hidden in the Vault</item>
+        <item quantity="other">%1$d hidden in the Vault</item>
+    </plurals>
+    <plurals name="unhidden">
+        <item quantity="one">%1$d restored</item>
+        <item quantity="other">%1$d restored</item>
+    </plurals>
 </resources>

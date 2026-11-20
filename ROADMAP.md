@@ -15,6 +15,5 @@
 - Se indexa poco a poco, con el teléfono cargando, y se puede borrar el índice.
 - Pendiente: caras (agrupar personas), lugar (GPS de la foto) y vectores densos para frases largas.
 
-## Pendiente (de las capturas de la galería del teléfono)
-- Crear álbum (+), Mover y Copiar a otro álbum, Ocultar / Bóveda, Exportar a PDF, Memorias.
-- Paginación para bibliotecas muy grandes.
+## Pendiente
+- Paginación para bibliotecas muy grandes; presentación (pase de fotos) en Memorias.

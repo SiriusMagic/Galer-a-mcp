@@ -52,6 +52,10 @@ object Library {
         return if (s >= 3600) "%d:%02d:%02d".format(s / 3600, s / 60 % 60, s % 60) else "%02d:%02d".format(s / 60, s % 60)
     }
 
+    /** A folder name Android accepts: no slashes or control characters, trimmed, at most 60 characters. */
+    fun safeName(name: String): String = name.replace(Regex("[\\\\/:*?\"<>|\\p{Cntrl}]"), " ").replace(Regex("\\s+"), " ")
+        .trim().trim('.').take(60).ifBlank { "Luma" }
+
     fun toggle(favorites: Set<String>, item: Media): Set<String> =
         if (item.key in favorites) favorites - item.key else favorites + item.key
 }

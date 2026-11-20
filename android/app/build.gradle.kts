@@ -12,8 +12,8 @@ android {
         applicationId = "app.luma.gallery"
         minSdk = 29 // RELATIVE_PATH (albums by folder) and scoped storage
         targetSdk = 36
-        versionCode = 3
-        versionName = "0.3.0"
+        versionCode = 4
+        versionName = "0.4.0"
         // ML Kit's on-device models are native code: only 64-bit ARM phones (all recent ones), so the APK stays small.
         ndk { abiFilters += "arm64-v8a" }
     }
@@ -57,6 +57,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.11.0")
     // Indexing runs in the background while charging with the screen off.
     implementation("androidx.work:work-runtime-ktx:2.12.0")
+    // Bóveda: the phone's own lock (fingerprint, face, PIN…).
+    implementation("androidx.biometric:biometric:1.1.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.18")
     testImplementation("androidx.compose.ui:ui-test-junit4")

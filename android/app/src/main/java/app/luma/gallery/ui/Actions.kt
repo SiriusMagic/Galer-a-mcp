@@ -12,8 +12,17 @@ class GalleryActions(
     val edit: (Media) -> Unit = {},
     val play: (Media) -> Unit = {},
     val wallpaper: (Media) -> Unit = {},
-    val copy: (Media) -> Unit = {},
+    val copyClipboard: (Media) -> Unit = {},
     val openWith: (Media) -> Unit = {},
+    val move: (List<Media>, String) -> Unit = { _, _ -> },
+    val copy: (List<Media>, String) -> Unit = { _, _ -> },
+    /** Into the vault (Android asks before deleting the originals). */
+    val hide: (List<Media>) -> Unit = {},
+    val pdf: (List<Media>) -> Unit = {},
+    /** Asks for the phone's lock, then opens the vault. */
+    val openVault: () -> Unit = {},
+    val unhide: (List<app.luma.gallery.data.Hidden>) -> Unit = {},
+    val eraseHidden: (List<app.luma.gallery.data.Hidden>) -> Unit = {},
     val indexNow: () -> Unit = {},
     val stopIndex: () -> Unit = {},
     val clearIndex: () -> Unit = {},

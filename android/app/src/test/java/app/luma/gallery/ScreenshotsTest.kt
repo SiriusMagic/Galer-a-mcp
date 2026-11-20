@@ -43,7 +43,11 @@ class ScreenshotsTest {
         compose.onAllNodesWithText("Álbumes").onFirst().performClick()
         compose.onNodeWithText("Favoritas").assertExists()
         compose.onNodeWithText("Más álbumes").assertExists()
+        compose.onNodeWithText("Bóveda").assertExists()
         onView(isRoot()).captureRoboImage("build/screenshots/luma-albums.png")
+        compose.runOnIdle { state.go(Page.MEMORIES) }
+        compose.onAllNodesWithText("Memorias").onFirst().assertExists()
+        onView(isRoot()).captureRoboImage("build/screenshots/luma-memories.png")
         compose.runOnIdle { state.go(Page.SEARCH) }
         compose.onNodeWithText("Búsqueda inteligente").assertExists()
         onView(isRoot()).captureRoboImage("build/screenshots/luma-search.png")

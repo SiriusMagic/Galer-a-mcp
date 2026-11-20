@@ -1,3 +1,14 @@
+# Luma 0.4.0
+
+- **Nuevo álbum (+)** en Álbumes: le pones nombre, eliges las fotos y decides **Mover** o **Copiar**.
+- **Mover o copiar a un álbum** desde la selección o desde el visor (⋮). Mover pide la confirmación de Android.
+- **Ocultar / Bóveda:** lo que ocultas sale de la galería y queda dentro de Luma (nunca en copias de seguridad). La
+  Bóveda (en Álbumes) se abre solo con el bloqueo del teléfono (huella, cara, PIN…) y se cierra al salir; desde ahí,
+  restaurar a su álbum o borrar para siempre.
+- **Exportar a PDF** (una foto por página, A4) en Documentos/Luma, desde la selección o el visor.
+- **Memorias** (pestaña nueva): «Un día como hoy», los últimos meses y temas que aparecen mucho (perros, playa…).
+- 14 pruebas (memorias, bóveda, nombres de álbum, nuevo álbum, elegir álbum y capturas).
+
 # Luma 0.3.0
 
 - **Búsqueda inteligente (buscar sin ver):** Luma analiza tus fotos dentro del teléfono con ML Kit (sin internet) y

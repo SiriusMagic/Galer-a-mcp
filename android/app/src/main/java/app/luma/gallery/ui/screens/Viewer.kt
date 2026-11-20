@@ -33,7 +33,8 @@ import java.util.Date
 /** What the viewer's buttons do; the screen only reports them. */
 class ViewerActions(val favorite: (Media) -> Unit, val share: (Media) -> Unit, val edit: (Media) -> Unit,
     val delete: ((Media) -> Unit)?, val play: (Media) -> Unit, val wallpaper: (Media) -> Unit = {},
-    val copy: (Media) -> Unit = {}, val openWith: (Media) -> Unit = {})
+    val copy: (Media) -> Unit = {}, val openWith: (Media) -> Unit = {}, val toAlbum: (Media) -> Unit = {},
+    val hide: (Media) -> Unit = {}, val pdf: (Media) -> Unit = {})
 
 /** Full screen, black, swipe between items; date on top; share · heart · edit · delete · more at the bottom. */
 @Composable fun Viewer(items: List<Media>, start: Media, favorites: Set<String>, facts: Map<String, Facts>, actions: ViewerActions,
@@ -78,6 +79,9 @@ class ViewerActions(val favorite: (Media) -> Unit, val share: (Media) -> Unit, v
                 Box {
                     Bar(Icons.Default.MoreVert, R.string.more) { menu = true }
                     DropdownMenu(menu, { menu = false }) {
+                        Item(R.string.to_album) { menu = false; actions.toAlbum(item) }
+                        Item(R.string.hide) { menu = false; actions.hide(item) }
+                        if (!item.isVideo) Item(R.string.export_pdf) { menu = false; actions.pdf(item) }
                         Item(R.string.details) { menu = false; details = true }
                         if (!item.isVideo) Item(R.string.wallpaper) { menu = false; actions.wallpaper(item) }
                         Item(R.string.copy_clipboard) { menu = false; actions.copy(item) }

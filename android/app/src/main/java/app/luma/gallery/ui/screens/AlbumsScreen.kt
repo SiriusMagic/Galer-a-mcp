@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PhotoAlbum
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import java.text.NumberFormat
 
 /** Built-in albums, «Más álbumes» (folders) and, on Android 11+, «Eliminado recientemente». */
 @Composable fun AlbumsScreen(pinned: List<Album>, more: List<Album>, trashCount: Int?, onOpen: (String) -> Unit, onTrash: () -> Unit,
+    onVault: () -> Unit,
     modifier: Modifier = Modifier, header: @Composable () -> Unit) {
     val number = NumberFormat.getIntegerInstance()
     LazyVerticalGrid(GridCells.Fixed(3), modifier.fillMaxSize(), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 120.dp),
@@ -45,17 +47,23 @@ import java.text.NumberFormat
             Text(stringResource(R.string.more_albums), Modifier.padding(top = 18.dp, start = 4.dp), fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
         }
         items(more, key = { "f-" + it.id }) { AlbumTile(it, number, onOpen) }
-        if (trashCount != null) item(span = { GridItemSpan(maxLineSpan) }) {
-            Row(Modifier.padding(top = 18.dp).fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                .clickable(onClick = onTrash).padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Delete, null)
-                Column(Modifier.weight(1f).padding(start = 16.dp)) {
-                    Text(stringResource(R.string.trash), fontSize = 18.sp)
-                    Text(number.format(trashCount), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f))
-                }
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null)
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Column(Modifier.padding(top = 18.dp).fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surfaceContainerHigh)) {
+                Line(Icons.Default.Lock, stringResource(R.string.vault), null, onVault)
+                if (trashCount != null) Line(Icons.Default.Delete, stringResource(R.string.trash), number.format(trashCount), onTrash)
             }
         }
+    }
+}
+
+@Composable private fun Line(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, count: String?, onClick: () -> Unit) {
+    Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+        Icon(icon, null)
+        Column(Modifier.weight(1f).padding(start = 16.dp)) {
+            Text(title, fontSize = 18.sp)
+            count?.let { Text(it, color = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)) }
+        }
+        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null)
     }
 }
 

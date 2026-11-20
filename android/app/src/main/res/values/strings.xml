@@ -67,4 +67,49 @@
     <string name="detail_text">Texto en la imagen</string>
     <string name="detail_not_yet">Aún sin analizar</string>
     <string name="detail_nothing">Nada reconocible</string>
+    <string name="memories">Memorias</string>
+    <string name="memories_empty">Aún no hay memorias. Aparecen con más fotos y cuando la búsqueda inteligente las analiza.</string>
+    <string name="memory_on_this_day">Un día como hoy · %1$d</string>
+    <string name="new_album">Nuevo álbum</string>
+    <string name="new_album_name">Nombre del álbum</string>
+    <string name="to_album">Mover o copiar a un álbum</string>
+    <string name="pick_photos">Elegir fotos</string>
+    <string name="pick_for">Para «%1$s»</string>
+    <string name="move">Mover</string>
+    <string name="copy">Copiar</string>
+    <string name="hide">Ocultar</string>
+    <string name="unhide">Restaurar</string>
+    <string name="export_pdf">Exportar a PDF</string>
+    <string name="vault">Bóveda</string>
+    <string name="vault_unlock">Confirma que eres tú para abrir lo que ocultaste</string>
+    <string name="vault_hint">Solo tú la ves. Toca para elegir; luego restaurar o borrar para siempre.</string>
+    <string name="vault_empty">Aquí aparece lo que ocultes (⋮ › Ocultar).</string>
+    <string name="vault_needs_lock">Pon un bloqueo de pantalla en el teléfono para usar la Bóveda.</string>
+    <string name="pdf_done">PDF guardado en Documentos/Luma</string>
+    <string name="pdf_failed">No se pudo crear el PDF (los videos no se exportan)</string>
+    <plurals name="photos_count">
+        <item quantity="one">%d foto</item>
+        <item quantity="many">%d fotos</item>
+        <item quantity="other">%d fotos</item>
+    </plurals>
+    <plurals name="moved">
+        <item quantity="one">%1$d movida a «%2$s»</item>
+        <item quantity="many">%1$d movidas a «%2$s»</item>
+        <item quantity="other">%1$d movidas a «%2$s»</item>
+    </plurals>
+    <plurals name="copied_to">
+        <item quantity="one">%1$d copiada a «%2$s»</item>
+        <item quantity="many">%1$d copiadas a «%2$s»</item>
+        <item quantity="other">%1$d copiadas a «%2$s»</item>
+    </plurals>
+    <plurals name="hidden_done">
+        <item quantity="one">%1$d oculta en la Bóveda</item>
+        <item quantity="many">%1$d ocultas en la Bóveda</item>
+        <item quantity="other">%1$d ocultas en la Bóveda</item>
+    </plurals>
+    <plurals name="unhidden">
+        <item quantity="one">%1$d restaurada</item>
+        <item quantity="many">%1$d restauradas</item>
+        <item quantity="other">%1$d restauradas</item>
+    </plurals>
 </resources>
