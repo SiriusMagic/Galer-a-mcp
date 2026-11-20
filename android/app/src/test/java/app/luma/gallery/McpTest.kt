@@ -87,6 +87,21 @@ class McpTest {
         assertEquals(listOf("@all", "@favorites", "@camera", "WhatsApp Images"), (0 until albums.length()).map { albums.getJSONObject(it).getString("name") })
     }
 
+    @Test fun byDateTypeAndOrder() {
+        fun ids(args: JSONObject) = tool(reader, "gallery_by_date", args).getJSONObject("structuredContent").getJSONArray("results")
+            .let { r -> (0 until r.length()).map { r.getJSONObject(it).getString("id") } }
+        val day = java.time.Instant.ofEpochMilli(30_000).atZone(java.time.ZoneId.systemDefault()).toLocalDate().toString()
+        assertEquals(listOf("i1", "i2"), ids(JSONObject().put("from", day)))
+        assertEquals(listOf("i2", "i1"), ids(JSONObject().put("from", day).put("order", "oldest")))
+        assertEquals(emptyList<String>(), ids(JSONObject().put("from", day).put("type", "video")))
+        assertEquals(emptyList<String>(), ids(JSONObject().put("from", "2030-01-01")))
+        val bad = tool(reader, "gallery_by_date", JSONObject().put("from", "ayer"))
+        assertEquals("INVALID_ARGUMENT", bad.getJSONObject("structuredContent").getJSONObject("error").getString("code"))
+        val recent = tool(reader, "gallery_recent", JSONObject().put("order", "oldest").put("limit", 1)).getJSONObject("structuredContent")
+        assertEquals("i2", recent.getJSONArray("results").getJSONObject(0).getString("id"))
+        assertEquals(2, recent.getInt("total"))
+    }
+
     @Test fun tooManyRequestsAreRefused() {
         repeat(McpHandler.PER_MINUTE) { assertEquals(200, call(writer, "ping").status) }
         assertEquals(429, call(writer, "ping").status)

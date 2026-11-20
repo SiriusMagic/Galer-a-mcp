@@ -32,7 +32,7 @@ import java.util.Date
 
 /** What the viewer's buttons do; the screen only reports them. */
 class ViewerActions(val favorite: (Media) -> Unit, val share: (Media) -> Unit, val edit: (Media) -> Unit,
-    val delete: ((Media) -> Unit)?, val play: (Media) -> Unit, val wallpaper: (Media) -> Unit = {},
+    val delete: ((Media) -> Unit)?, val wallpaper: (Media) -> Unit = {},
     val copy: (Media) -> Unit = {}, val openWith: (Media) -> Unit = {}, val toAlbum: (Media) -> Unit = {},
     val hide: (Media) -> Unit = {}, val pdf: (Media) -> Unit = {})
 
@@ -43,15 +43,20 @@ class ViewerActions(val favorite: (Media) -> Unit, val share: (Media) -> Unit, v
     val pager = rememberPagerState(first) { items.size }
     var menu by remember { mutableStateOf(false) }
     var details by remember { mutableStateOf(false) }
+    /** The video playing inside Luma (only the page on screen plays). */
+    var playing by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(pager, items) { snapshotFlow { pager.currentPage }.collect { items.getOrNull(it)?.let(onShowing) } }
     Dialog(onClose, DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
         Box(Modifier.fillMaxSize().background(Color.Black)) {
             HorizontalPager(pager, Modifier.fillMaxSize(), key = { items[it].key }) { page ->
                 val item = items[page]
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    AsyncImage(item.uri, item.name, Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
-                    if (item.isVideo) Icon(Icons.Default.PlayCircle, stringResource(R.string.play),
-                        Modifier.size(72.dp).clip(CircleShape).clickable { actions.play(item) }, tint = Color.White)
+                    if (item.isVideo && playing == item.key && pager.currentPage == page) VideoPlayer(item.uri, Modifier.fillMaxSize().padding(bottom = 90.dp))
+                    else {
+                        AsyncImage(item.uri, item.name, Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
+                        if (item.isVideo) Icon(Icons.Default.PlayCircle, stringResource(R.string.play),
+                            Modifier.size(72.dp).clip(CircleShape).clickable { playing = item.key }, tint = Color.White)
+                    }
                 }
             }
             val item = items.getOrNull(pager.currentPage) ?: start

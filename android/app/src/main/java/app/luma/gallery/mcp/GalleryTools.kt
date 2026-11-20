@@ -8,6 +8,8 @@ import app.luma.gallery.index.Labels
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 /** What the tools read and change; the app gives the real one, tests a fake. */
 interface GalleryData {
@@ -33,12 +35,19 @@ object GalleryTools {
     private fun str(d: String) = JSONObject().put("type", "string").put("description", d)
     private fun int(d: String, max: Int) = JSONObject().put("type", "integer").put("minimum", 1).put("maximum", max).put("description", d)
 
+    private val TYPE = JSONObject().put("type", "string").put("enum", JSONArray(listOf("all", "photo", "video"))).put("description", "Default all")
+    private val ORDER = JSONObject().put("type", "string").put("enum", JSONArray(listOf("newest", "oldest"))).put("description", "Default newest")
+
     val all = listOf(
         Tool("gallery_search", "Search the user's photos and videos by what they show or the text inside them, in Spanish or English " +
             "(e.g. 'perro en la playa', 'recibo supermercado'). Returns ids, date, album, what was recognised and a text snippet; " +
             "never the image.", false, schema("query" to str("Words to look for"), "limit" to int("Max results (default 20)", 50), required = listOf("query"))),
-        Tool("gallery_recent", "The newest photos and videos, optionally of one album.", false,
-            schema("album" to str("Album (folder) name; omit for all"), "limit" to int("Max results (default 20)", 50))),
+        Tool("gallery_recent", "The newest (or oldest) photos and videos, optionally of one album or only photos / videos.", false,
+            schema("album" to str("Album (folder) name; omit for all"), "type" to TYPE, "order" to ORDER, "limit" to int("Max results (default 20)", 50))),
+        Tool("gallery_by_date", "Photos and videos taken between two dates (YYYY-MM-DD, both included), e.g. a trip or a birthday.",
+            false, schema("from" to str("First day, YYYY-MM-DD"), "to" to str("Last day, YYYY-MM-DD (default: same as from)"),
+                "type" to TYPE, "order" to ORDER, "album" to str("Album (folder) name; omit for all"),
+                "limit" to int("Max results (default 20)", 50), required = listOf("from"))),
         Tool("gallery_albums", "The albums (folders) with how many items each has, plus Favorites.", false, schema()),
         Tool("gallery_info", "Everything known about one photo or video by id: date, album, size, resolution, length, labels, text.",
             false, schema("id" to str("Id from another gallery tool (e.g. i1234)"), required = listOf("id"))),
@@ -62,10 +71,14 @@ object GalleryTools {
                 JSONObject().put("query", query).put("analysed", facts.size).put("total", media.size)
                     .put("results", JSONArray(hits.map { describe(it.media, facts[it.media.key], data).put("score", round(it.score)).put("matched", JSONArray(it.why)) }))
             }
-            "gallery_recent" -> {
-                val album = args.optString("album").takeIf { it.isNotBlank() }
-                val facts = data.facts()
-                JSONObject().put("results", JSONArray(Library.filter(media, data.favorites(), album).take(limit(args)).map { describe(it, facts[it.key], data) }))
+            "gallery_recent" -> list(media, args, data, null)
+            "gallery_by_date" -> {
+                val from = day(args.optString("from"), "from")
+                val to = args.optString("to").takeIf { it.isNotBlank() }?.let { day(it, "to") } ?: from
+                if (to.isBefore(from)) throw ToolFailure("INVALID_ARGUMENT", "to is before from.")
+                val zone = ZoneId.systemDefault()
+                list(media, args, data) { m -> Instant.ofEpochMilli(m.takenAt).atZone(zone).toLocalDate().let { !it.isBefore(from) && !it.isAfter(to) } }
+                    .put("from", from.toString()).put("to", to.toString())
             }
             "gallery_albums" -> {
                 val (pinned, more) = Library.albums(media, data.favorites())
@@ -90,6 +103,23 @@ object GalleryTools {
             }
         }
     }
+
+    /** Album, photo/video and date filters, newest or oldest first. */
+    private suspend fun list(media: List<Media>, args: JSONObject, data: GalleryData, keep: ((Media) -> Boolean)?): JSONObject {
+        val album = args.optString("album").takeIf { it.isNotBlank() }
+        val type = args.optString("type", "all").ifBlank { "all" }
+        if (type !in setOf("all", "photo", "video")) throw ToolFailure("INVALID_ARGUMENT", "type is all, photo or video.")
+        val order = args.optString("order", "newest").ifBlank { "newest" }
+        if (order !in setOf("newest", "oldest")) throw ToolFailure("INVALID_ARGUMENT", "order is newest or oldest.")
+        val facts = data.facts()
+        val found = Library.filter(media, data.favorites(), album)
+            .filter { (type == "all" || it.isVideo == (type == "video")) && (keep == null || keep(it)) }
+            .let { if (order == "oldest") it.reversed() else it }
+        return JSONObject().put("total", found.size).put("results", JSONArray(found.take(limit(args)).map { describe(it, facts[it.key], data) }))
+    }
+
+    private fun day(text: String, name: String): LocalDate = runCatching { LocalDate.parse(text.trim()) }
+        .getOrElse { throw ToolFailure("INVALID_ARGUMENT", "$name must be a date like 2026-11-20.") }
 
     private fun limit(args: JSONObject) = args.optInt("limit", 20).coerceIn(1, 50)
     private fun round(f: Float) = Math.round(f * 100) / 100.0

@@ -156,4 +156,6 @@
     <string name="mcp_revoke_title">¿Revocar %1$s?</string>
     <string name="mcp_revoke_text">La IA pierde el acceso al instante y su enlace deja de funcionar.</string>
     <string name="hub_link_permission">Vincular con Gateway Hub</string>
+    <string name="open_with_none">Ninguna app instalada puede abrirlo.</string>
+    <string name="open_with_ours">Recomendado · mismo desarrollador</string>
 </resources>

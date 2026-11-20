@@ -12,7 +12,13 @@
     <permission android:name="com.zirakusa.gatewayhub.permission.LINK" android:protectionLevel="signature"
         android:label="@string/hub_link_permission" />
 
+    <!-- «Abrir con…»: Luma lists the apps that open photos and videos (Stone first) instead of Android's chooser. -->
+    <queries>
+        <intent><action android:name="android.intent.action.VIEW" /><data android:mimeType="video/*" /></intent>
+        <intent><action android:name="android.intent.action.VIEW" /><data android:mimeType="image/*" /></intent>
+    </queries>
     <application
+        android:name=".LumaApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"

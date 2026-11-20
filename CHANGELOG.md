@@ -1,3 +1,13 @@
+# Luma 0.6.0
+
+- **Los videos se ven:** las miniaturas de video ya se dibujan (faltaba el decodificador de fotogramas) y el ▶ del visor
+  los reproduce **dentro de Luma**, con pausa y barra de tiempo.
+- **Abrir con…** muestra primero **Stone** (recomendado, mismo desarrollador; necesita Stone 1.7.23) y después los demás
+  reproductores o visores instalados, por nombre.
+- MCP: nueva herramienta `gallery_by_date` (entre dos fechas) y `gallery_recent` acepta orden (más nuevas o más viejas)
+  y tipo (fotos o videos).
+- 23 pruebas.
+
 # Luma 0.5.0
 
 - **Modo MCP** (Ajustes › Modo MCP), como en Stone: Activar MCP, **Crear token** (LLM o Hub, uso, solo lectura o

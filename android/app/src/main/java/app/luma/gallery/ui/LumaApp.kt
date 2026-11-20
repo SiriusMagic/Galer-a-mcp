@@ -64,7 +64,7 @@ import app.luma.gallery.ui.screens.*
     state.viewing?.let { item ->
         Viewer(state.visible.ifEmpty { listOf(item) }, item, state.favorites, state.facts,
             ViewerActions(state::toggleFavorite, { actions.share(listOf(it)) }, actions.edit, actions.trash?.let { t -> { m -> t(listOf(m)) } },
-                actions.play, actions.wallpaper, actions.copyClipboard, actions.openWith, toAlbum = { toAlbum = listOf(it); naming = false },
+                actions.wallpaper, actions.copyClipboard, actions.openWith, toAlbum = { toAlbum = listOf(it); naming = false },
                 hide = { actions.hide(listOf(it)) }, pdf = { actions.pdf(listOf(it)) }),
             onShowing = { state.viewing = it }, onClose = { state.viewing = null })
     }

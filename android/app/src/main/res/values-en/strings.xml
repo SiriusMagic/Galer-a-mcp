@@ -148,4 +148,6 @@
     <string name="mcp_revoke_title">Revoke %1$s?</string>
     <string name="mcp_revoke_text">The AI loses access at once and its link stops working.</string>
     <string name="hub_link_permission">Link with Gateway Hub</string>
+    <string name="open_with_none">No installed app can open it.</string>
+    <string name="open_with_ours">Recommended · same developer</string>
 </resources>

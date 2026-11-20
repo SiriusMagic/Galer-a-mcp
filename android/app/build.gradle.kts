@@ -12,8 +12,8 @@ android {
         applicationId = "app.luma.gallery"
         minSdk = 29 // RELATIVE_PATH (albums by folder) and scoped storage
         targetSdk = 36
-        versionCode = 5
-        versionName = "0.5.0"
+        versionCode = 6
+        versionName = "0.6.0"
         // ML Kit's on-device models are native code: only 64-bit ARM phones (all recent ones), so the APK stays small.
         ndk { abiFilters += "arm64-v8a" }
         // Modo MCP: the same public relay as Stone (one device id per app). Empty = no MCP over the internet.
@@ -54,6 +54,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("io.coil-kt:coil-video:2.7.0")
+    // Videos play inside Luma (same Media3 as Stone).
+    implementation("androidx.media3:media3-exoplayer:1.6.1")
+    implementation("androidx.media3:media3-ui:1.6.1")
     // On-device only (bundled models, no internet): what a photo shows and the text inside it.
     implementation("com.google.mlkit:image-labeling:17.0.9")
     implementation("com.google.mlkit:text-recognition:16.0.1")

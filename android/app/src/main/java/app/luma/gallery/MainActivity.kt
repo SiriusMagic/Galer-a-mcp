@@ -22,6 +22,9 @@ import app.luma.gallery.ui.theme.ThemeMode
 import app.luma.gallery.data.Media
 import app.luma.gallery.data.MediaStoreSource
 import app.luma.gallery.data.MediaWriter
+import app.luma.gallery.data.Opener
+import app.luma.gallery.data.Openers
+import app.luma.gallery.ui.screens.OpenWithDialog
 import app.luma.gallery.data.Vault
 import app.luma.gallery.index.IndexWorker
 import app.luma.gallery.mcp.McpMode
@@ -68,6 +71,8 @@ class MainActivity : FragmentActivity() {
                     state.showHidden(withContext(Dispatchers.IO) { vault.list() })
                 }
                 /** What to do once Android's confirmation comes back (moving needs write access; hiding deletes originals). */
+                /** «Abrir con…»: the item and the apps that can open it (Stone first). */
+                var opening by remember { mutableStateOf<Pair<Media, List<Opener>>?>(null) }
                 var afterConfirm by remember { mutableStateOf<(suspend (Boolean) -> Unit)?>(null) }
                 val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
                     granted = MediaAccess.granted(this); reload()
@@ -89,15 +94,20 @@ class MainActivity : FragmentActivity() {
                 val running = work.any { it.state == WorkInfo.State.RUNNING }
                 LaunchedEffect(running) { if (!running) reload() } // new facts when an analysis ends
                 val uris = { items: List<Media> -> items.map { it.uri } }
+                opening?.let { (item, apps) ->
+                    OpenWithDialog(apps, { app ->
+                        opening = null
+                        runCatching { startActivity(Openers.intent(item.uri, item.isVideo).setClassName(app.packageName, app.activity)) }
+                    }) { opening = null }
+                }
                 LumaApp(state, granted, { ask.launch(MediaAccess.permissions()) }, GalleryActions(
                     share = ::share,
                     trash = if (Build.VERSION.SDK_INT >= 30) { items -> ask(MediaStore.createTrashRequest(contentResolver, uris(items), true)) } else null,
                     restore = { if (Build.VERSION.SDK_INT >= 30) ask(MediaStore.createTrashRequest(contentResolver, uris(it), false)) },
                     deleteForever = { if (Build.VERSION.SDK_INT >= 30) ask(MediaStore.createDeleteRequest(contentResolver, uris(it))) },
                     edit = { open(Intent.ACTION_EDIT, it) },
-                    play = { open(Intent.ACTION_VIEW, it) },
                     wallpaper = { open(Intent.ACTION_ATTACH_DATA, it) },
-                    openWith = { open(Intent.ACTION_VIEW, it) },
+                    openWith = { item -> opening = item to Openers.find(this, item) },
                     copyClipboard = {
                         getSystemService(android.content.ClipboardManager::class.java)
                             ?.setPrimaryClip(android.content.ClipData.newUri(contentResolver, it.name, it.uri))

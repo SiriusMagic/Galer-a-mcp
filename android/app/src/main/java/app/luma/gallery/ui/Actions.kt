@@ -10,7 +10,6 @@ class GalleryActions(
     val restore: (List<Media>) -> Unit = {},
     val deleteForever: (List<Media>) -> Unit = {},
     val edit: (Media) -> Unit = {},
-    val play: (Media) -> Unit = {},
     val wallpaper: (Media) -> Unit = {},
     val copyClipboard: (Media) -> Unit = {},
     val openWith: (Media) -> Unit = {},
