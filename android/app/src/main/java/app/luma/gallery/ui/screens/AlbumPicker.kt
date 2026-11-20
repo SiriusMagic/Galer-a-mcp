@@ -17,8 +17,7 @@ import app.luma.gallery.R
 
 /**
  * Where the photos go: an existing album or a new name, then Mover or Copiar. With [onlyName] (the «+» button) it only
- * asks the name of the new album; the photos are picked afterwards. A plain Dialog (not AlertDialog): its button row
- * keeps re-measuring with long Spanish labels.
+ * asks the name of the new album; the photos are picked afterwards. A plain Dialog lays out three buttons in one row.
  */
 @Composable fun AlbumPicker(albums: List<String>, onlyName: Boolean, onDismiss: () -> Unit, onMove: (String) -> Unit, onCopy: (String) -> Unit) {
     var name by remember { mutableStateOf("") }
