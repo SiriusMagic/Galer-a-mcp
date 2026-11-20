@@ -16,6 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,7 +42,7 @@ import app.luma.gallery.R
 }
 
 @Composable fun Action(icon: ImageVector, label: Int, onClick: () -> Unit) {
-    IconButton(onClick) { Icon(icon, stringResource(label), Modifier.size(26.dp)) }
+    IconButton(onClick, Modifier.size(44.dp)) { Icon(icon, stringResource(label), Modifier.size(24.dp)) }
 }
 
 /** Floating bottom bar: Fotos · Álbumes · Memorias in a pill, and a round Buscar button apart, like the screenshots. */
@@ -73,10 +75,16 @@ import app.luma.gallery.R
 /** While picking: how many, select all, and the actions on them; replaces the floating bar. */
 @Composable fun BoxScope.SelectionBar(count: Int, actions: List<Triple<ImageVector, Int, () -> Unit>>,
     more: List<Pair<Int, () -> Unit>> = emptyList()) {
+    val label = pluralLabel(count)
     Row(Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(16.dp).fillMaxWidth().shadow(8.dp, CircleShape)
         .clip(CircleShape).background(MaterialTheme.colorScheme.surfaceContainerHigh).padding(horizontal = 12.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        Text(pluralLabel(count), Modifier.weight(1f).padding(start = 8.dp), fontWeight = FontWeight.Medium)
+        // Just the number (with a check) so it never wraps; the full phrase is read by TalkBack.
+        Row(Modifier.weight(1f).padding(start = 8.dp).semantics(mergeDescendants = true) { contentDescription = label },
+            verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.CheckCircle, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
+            Text(count.toString(), Modifier.padding(start = 6.dp), fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+        }
         actions.forEach { (icon, label, onClick) -> Action(icon, label, onClick) }
         if (more.isNotEmpty()) Box {
             var open by remember { mutableStateOf(false) }

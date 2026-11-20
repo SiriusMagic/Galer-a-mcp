@@ -112,4 +112,13 @@
         <item quantity="many">%1$d restauradas</item>
         <item quantity="other">%1$d restauradas</item>
     </plurals>
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="accent_sage">Salvia</string>
+    <string name="accent_ocean">Océano</string>
+    <string name="accent_sunset">Atardecer</string>
+    <string name="accent_lavender">Lavanda</string>
+    <string name="accent_graphite">Grafito</string>
 </resources>

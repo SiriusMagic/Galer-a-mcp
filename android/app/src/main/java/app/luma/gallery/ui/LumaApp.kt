@@ -20,7 +20,7 @@ import app.luma.gallery.ui.screens.*
 
 /** Fotos · Álbumes · Memorias · Buscar, Eliminado recientemente, Bóveda, Ajustes, and the viewer on top. */
 @Composable fun LumaApp(state: GalleryState, hasPermission: Boolean, onGrant: () -> Unit, actions: GalleryActions,
-    index: IndexStatus = IndexStatus(), version: String = "") {
+    index: IndexStatus = IndexStatus(), version: String = "", settingsExtra: @Composable ColumnScope.() -> Unit = {}) {
     BackHandler(state.viewing != null || state.selected.isNotEmpty() || state.album != null || state.page != Page.PHOTOS ||
         state.target != null) { state.back() }
     /** Photos waiting for «Mover / Copiar a…» (null: no dialog), and whether «+» only asks a name. */
@@ -32,7 +32,7 @@ import app.luma.gallery.ui.screens.*
         when {
             !hasPermission -> PermissionScreen(onGrant)
             !state.loaded -> EmptyState(stringResource(R.string.loading))
-            state.page == Page.SETTINGS -> SettingsScreen(index, version, actions.indexNow, actions.stopIndex, actions.clearIndex) {
+            state.page == Page.SETTINGS -> SettingsScreen(index, version, actions.indexNow, actions.stopIndex, actions.clearIndex, extra = settingsExtra) {
                 Header(stringResource(R.string.settings), { state.back() }) {}
             }
             state.page == Page.ALBUMS -> {
@@ -116,7 +116,8 @@ import app.luma.gallery.ui.screens.*
     val back = state.album != null || state.page == Page.TRASH || state.memory != null || state.target != null
     MediaGrid(state.visible, state.favorites, state.selected, empty,
         byDay = state.page == Page.PHOTOS && (state.album == null || state.album == app.luma.gallery.data.Library.builtIn(AlbumKind.ALL)),
-        onTap = { if (state.target != null) state.select(it) else state.tap(it) }, onLongPress = state::select) {
+        onTap = { if (state.target != null) state.select(it) else state.tap(it) }, onSelection = state::setSelection,
+        zoom = state.zoom, onZoom = if (state.page == Page.PHOTOS && state.album == null) ({ z -> state.zoom = z }) else null) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             Column {
                 Header(title, if (back) ({ state.back() }) else null) { if (state.target == null) { select(); settings() } }

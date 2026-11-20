@@ -45,6 +45,11 @@ class LibraryTest {
         val days = Library.byDay(all, ZoneOffset.UTC)
         assertEquals(listOf(5L, 4L, 3L, 2L).map { LocalDate.ofEpochDay(it - 1) }, days.map { it.first })
         assertEquals("01:09", Library.duration(69_000))
+        // Pinch in: months, then years (more and smaller photos); pinch out goes back.
+        assertEquals(listOf(LocalDate.of(1970, 1, 1)), Library.sections(all, app.luma.gallery.data.Zoom.MONTH, ZoneOffset.UTC).map { it.first })
+        assertEquals(4, Library.sections(all, app.luma.gallery.data.Zoom.YEAR, ZoneOffset.UTC).single().second.size)
+        assertEquals(app.luma.gallery.data.Zoom.YEAR, app.luma.gallery.data.Zoom.DAY.coarser().coarser().coarser())
+        assertEquals(app.luma.gallery.data.Zoom.DAY, app.luma.gallery.data.Zoom.MONTH.finer().finer())
         assertEquals("1:01:01", Library.duration(3_661_000))
     }
 

@@ -58,8 +58,15 @@ class ScreenshotsTest {
         compose.onNodeWithText("Aún sin analizar").assertExists()
         compose.onNode(androidx.compose.ui.test.isDialog()).captureRoboImage("build/screenshots/luma-details.png")
         compose.runOnIdle { state.viewing = null; state.select(items[0]); state.select(items[1]) }
-        compose.onNodeWithText("2 seleccionadas").assertExists()
+        compose.onNodeWithContentDescription("2 seleccionadas").assertExists()
         onView(isRoot()).captureRoboImage("build/screenshots/luma-select.png")
+    }
+
+    @Test fun darkThemeHasLightIconsAndPinchedMonths() {
+        val state = GalleryState().apply { show(items); zoom = app.luma.gallery.data.Zoom.MONTH; setSelection(setOf(items[0].key)) }
+        compose.setContent { LumaTheme(dark = true, accent = app.luma.gallery.ui.theme.Accent.OCEANO) { LumaApp(state, true, {}, none) } }
+        compose.onNodeWithContentDescription("1 seleccionada").assertExists()
+        onView(isRoot()).captureRoboImage("build/screenshots/luma-dark-months.png")
     }
 
     @Test fun askForAccessFirst() {

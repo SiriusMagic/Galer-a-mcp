@@ -18,9 +18,10 @@ import app.luma.gallery.ui.IndexStatus
 
 /** Ajustes: the smart search (status, analyze now, stop, forget), privacy and version. */
 @Composable fun SettingsScreen(status: IndexStatus, version: String, onIndexNow: () -> Unit, onStop: () -> Unit, onClear: () -> Unit,
-    modifier: Modifier = Modifier, header: @Composable () -> Unit) {
+    modifier: Modifier = Modifier, extra: @Composable ColumnScope.() -> Unit = {}, header: @Composable () -> Unit) {
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 40.dp)) {
         header()
+        extra()
         Group(stringResource(R.string.index_title)) {
             Text(stringResource(R.string.index_hint), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .7f))
             Text(pluralStringResource(R.plurals.index_progress, status.analyzed, status.analyzed, status.total), Modifier.padding(top = 8.dp),
@@ -37,7 +38,7 @@ import app.luma.gallery.ui.IndexStatus
     }
 }
 
-@Composable private fun Group(title: String, content: @Composable ColumnScope.() -> Unit) {
+@Composable fun Group(title: String, content: @Composable ColumnScope.() -> Unit) {
     Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth().clip(RoundedCornerShape(24.dp))
         .background(MaterialTheme.colorScheme.surfaceContainerHigh).padding(20.dp)) {
         Text(title, fontSize = 18.sp, modifier = Modifier.padding(bottom = 6.dp))

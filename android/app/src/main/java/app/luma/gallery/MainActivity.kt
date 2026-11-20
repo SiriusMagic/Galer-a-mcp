@@ -14,7 +14,11 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import app.luma.gallery.data.Appearance
 import app.luma.gallery.data.Favorites
+import app.luma.gallery.ui.screens.Group
+import app.luma.gallery.ui.screens.ThemePicker
+import app.luma.gallery.ui.theme.ThemeMode
 import app.luma.gallery.data.Media
 import app.luma.gallery.data.MediaStoreSource
 import app.luma.gallery.data.MediaWriter
@@ -41,8 +45,12 @@ class MainActivity : FragmentActivity() {
         val writer = MediaWriter(this)
         val vault = Vault(this, writer)
         IndexWorker.schedule(this)
+        val appearance = Appearance(this)
         setContent {
-            LumaTheme {
+            var mode by remember { mutableStateOf(appearance.mode) }
+            var accent by remember { mutableStateOf(appearance.accent) }
+            val dark = mode == ThemeMode.DARK || (mode == ThemeMode.SYSTEM && androidx.compose.foundation.isSystemInDarkTheme())
+            LumaTheme(dark, accent) {
                 val state = remember { GalleryState(favorites.read(), favorites::write) }
                 DisposableEffect(state) { lockOnStop = state::lockVault; onDispose { lockOnStop = null } }
                 val scope = rememberCoroutineScope()
@@ -119,7 +127,11 @@ class MainActivity : FragmentActivity() {
                     indexNow = { IndexWorker.runNow(this) },
                     stopIndex = { IndexWorker.stop(this) },
                     clearIndex = { scope.launch { withContext(Dispatchers.IO) { facts.clear() }; reload() } },
-                ), IndexStatus(state.facts.size.coerceAtMost(state.media.size), state.media.size, running), BuildConfigVersion.name(this))
+                ), IndexStatus(state.facts.size.coerceAtMost(state.media.size), state.media.size, running), BuildConfigVersion.name(this)) {
+                    Group(androidx.compose.ui.res.stringResource(R.string.theme)) {
+                        ThemePicker(mode, accent, { mode = it; appearance.mode = it }, { accent = it; appearance.accent = it })
+                    }
+                }
             }
         }
     }

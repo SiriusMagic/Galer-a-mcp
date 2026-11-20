@@ -34,6 +34,8 @@ class GalleryState(favorites: Set<String> = emptySet(), private val saveFavorite
     var memory by mutableStateOf<String?>(null); private set
     /** Album the selection goes to after «+ Nuevo álbum» (the bar then offers Mover / Copiar to it). */
     var target by mutableStateOf<String?>(null); private set
+    /** Pinch level of the Fotos grid. */
+    var zoom by mutableStateOf(app.luma.gallery.data.Zoom.DAY)
     /** Keys picked with a long press; selection mode while not empty. */
     var selected by mutableStateOf(emptySet<String>()); private set
 
@@ -78,6 +80,8 @@ class GalleryState(favorites: Set<String> = emptySet(), private val saveFavorite
     }
 
     fun select(item: Media) { selected = if (item.key in selected) selected - item.key else selected + item.key }
+    /** Drag to select: what was picked before the drag plus the range swept so far. */
+    fun setSelection(keys: Set<String>) { selected = keys }
     fun selectAll() { selected = visible.mapTo(HashSet()) { it.key } }
     fun clearSelection() { selected = emptySet() }
     /** A tap: picks while selecting, otherwise opens the viewer. */

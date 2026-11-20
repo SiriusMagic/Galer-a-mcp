@@ -4,6 +4,13 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
+/** Pinch levels of the Fotos grid: pinch in to see months, again for years (more, smaller photos). */
+enum class Zoom(val columns: Int) {
+    DAY(4), MONTH(6), YEAR(10);
+    fun coarser() = entries.getOrElse(ordinal + 1) { this }
+    fun finer() = entries.getOrElse(ordinal - 1) { this }
+}
+
 /** Pure rules over the loaded media (no Android calls, so they are unit tested). Favorites are keyed by [Media.key]. */
 object Library {
     const val OTHERS = "Otros"
@@ -43,8 +50,14 @@ object Library {
     }
 
     /** The Fotos tab: one section per day, newest first. */
-    fun byDay(media: List<Media>, zone: ZoneId = ZoneId.systemDefault()): List<Pair<LocalDate, List<Media>>> =
-        media.sortedByDescending { it.takenAt }.groupBy { Instant.ofEpochMilli(it.takenAt).atZone(zone).toLocalDate() }.toList()
+    fun byDay(media: List<Media>, zone: ZoneId = ZoneId.systemDefault()) = sections(media, Zoom.DAY, zone)
+
+    /** Sections for a pinch level: per day, month (first day of it) or year (1 January), newest first. */
+    fun sections(media: List<Media>, zoom: Zoom, zone: ZoneId = ZoneId.systemDefault()): List<Pair<LocalDate, List<Media>>> =
+        media.sortedByDescending { it.takenAt }.groupBy {
+            val day = Instant.ofEpochMilli(it.takenAt).atZone(zone).toLocalDate()
+            when (zoom) { Zoom.DAY -> day; Zoom.MONTH -> day.withDayOfMonth(1); Zoom.YEAR -> day.withDayOfYear(1) }
+        }.toList()
 
     /** «01:09» or «1:02:03». */
     fun duration(ms: Long): String {
