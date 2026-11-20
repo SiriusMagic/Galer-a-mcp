@@ -1,0 +1,25 @@
+<resources>
+    <string name="photos">Photos</string>
+    <string name="albums">Albums</string>
+    <string name="search">Search</string>
+    <string name="favorites">Favorites</string>
+    <string name="back">Back</string>
+    <string name="loading">Loading your photos…</string>
+    <string name="no_photos">Your photos will appear here</string>
+    <string name="no_albums">No albums yet</string>
+    <string name="search_hint">Search by name or album</string>
+    <string name="search_empty">Type to search</string>
+    <string name="search_none">Nothing matches your search</string>
+    <string name="favorite">Favorite</string>
+    <string name="share">Share</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="play">Play</string>
+    <string name="permission_title">Your photos stay on your phone</string>
+    <string name="permission_text">Luma needs permission to show your photos and videos. It has no internet access and no ads.</string>
+    <string name="permission_button">Allow access to my photos</string>
+    <plurals name="items">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+</resources>

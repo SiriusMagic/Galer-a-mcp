@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name" translatable="false">Luma</string>
+    <string name="photos">Fotos</string>
+    <string name="albums">Álbumes</string>
+    <string name="search">Buscar</string>
+    <string name="favorites">Favoritas</string>
+    <string name="back">Volver</string>
+    <string name="loading">Cargando tus fotos…</string>
+    <string name="no_photos">Aquí aparecerán tus fotos</string>
+    <string name="no_albums">Aún no hay álbumes</string>
+    <string name="search_hint">Buscar por nombre o álbum</string>
+    <string name="search_empty">Escribe para buscar</string>
+    <string name="search_none">Nada coincide con tu búsqueda</string>
+    <string name="favorite">Favorita</string>
+    <string name="share">Compartir</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Borrar</string>
+    <string name="play">Reproducir</string>
+    <string name="permission_title">Tus fotos se quedan en tu teléfono</string>
+    <string name="permission_text">Luma necesita permiso para mostrar tus fotos y videos. No tiene acceso a internet ni publicidad.</string>
+    <string name="permission_button">Dar acceso a mis fotos</string>
+    <plurals name="items">
+        <item quantity="one">%d elemento</item>
+        <item quantity="many">%d elementos</item>
+        <item quantity="other">%d elementos</item>
+    </plurals>
+</resources>
