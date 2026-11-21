@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.CleaningServices
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,11 @@ import app.luma.gallery.ui.IndexStatus
 @Composable fun SearchBox(query: String, onQuery: (String) -> Unit, suggestions: List<String>, status: IndexStatus, showHelp: Boolean) {
     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         OutlinedTextField(query, onQuery, Modifier.fillMaxWidth(), singleLine = true, shape = CircleShape,
-            leadingIcon = { Icon(Icons.Default.Search, null) }, placeholder = { Text(stringResource(R.string.search_hint)) })
+            leadingIcon = { Icon(Icons.Default.Search, null) }, placeholder = { Text(stringResource(R.string.search_hint)) },
+            // The broom: clears the search in one tap (only while something is written).
+            trailingIcon = if (query.isEmpty()) null else {
+                { IconButton({ onQuery("") }) { Icon(Icons.Outlined.CleaningServices, stringResource(R.string.clear_search)) } }
+            })
         if (showHelp) {
             if (suggestions.isNotEmpty()) FlowRow(Modifier.padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 suggestions.forEach { SuggestionChip({ onQuery(it) }, { Text(it) }) }

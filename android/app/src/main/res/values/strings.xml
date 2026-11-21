@@ -158,4 +158,5 @@
     <string name="hub_link_permission">Vincular con Gateway Hub</string>
     <string name="open_with_none">Ninguna app instalada puede abrirlo.</string>
     <string name="open_with_ours">Recomendado · mismo desarrollador</string>
+    <string name="clear_search">Limpiar búsqueda</string>
 </resources>

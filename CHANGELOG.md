@@ -1,3 +1,8 @@
+# Luma 0.6.2
+
+- **Buscar:** una escoba al final de la caja de búsqueda borra lo escrito de un toque (aparece solo cuando hay texto).
+- 24 pruebas.
+
 # Luma 0.6.1
 
 - **Ícono nuevo:** fotos apiladas con un atardecer sobre las montañas, en un marco luminoso morado y azul. El marco sigue
