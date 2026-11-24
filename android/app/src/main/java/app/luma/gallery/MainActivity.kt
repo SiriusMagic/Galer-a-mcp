@@ -42,6 +42,7 @@ import kotlinx.coroutines.withContext
 class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppIcon.load(this)
         enableEdgeToEdge()
         val favorites = Favorites(this)
         val source = MediaStoreSource(this)
