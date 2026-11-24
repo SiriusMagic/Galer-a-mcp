@@ -12,8 +12,8 @@ android {
         applicationId = "app.luma.gallery"
         minSdk = 29 // RELATIVE_PATH (albums by folder) and scoped storage
         targetSdk = 36
-        versionCode = 8
-        versionName = "0.6.2"
+        versionCode = 9
+        versionName = "0.6.3"
         // ML Kit's on-device models are native code: only 64-bit ARM phones (all recent ones), so the APK stays small.
         ndk { abiFilters += "arm64-v8a" }
         // Modo MCP: the same public relay as Stone (one device id per app). Empty = no MCP over the internet.
