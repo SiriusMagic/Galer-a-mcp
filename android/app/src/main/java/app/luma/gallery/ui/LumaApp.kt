@@ -35,7 +35,6 @@ import app.luma.gallery.ui.screens.*
             state.page == Page.SETTINGS -> SettingsScreen(index, version, actions.indexNow, actions.stopIndex, actions.clearIndex, extra = settingsExtra) {
                 Header(stringResource(R.string.settings), { state.back() }) {}
             }
-            state.page == Page.MCP -> McpScreen(actions.copyLink, actions.goToHub) { Header(stringResource(R.string.mcp_title), { state.back() }) {} }
             state.page == Page.ALBUMS -> {
                 val (pinned, more) = state.albums
                 AlbumsScreen(pinned, more, state.trash.size.takeIf { actions.trash != null }, state::openAlbum, { state.go(Page.TRASH) },
@@ -53,7 +52,7 @@ import app.luma.gallery.ui.screens.*
             }
             else -> Grid(state, select, settings, index)
         }
-        if (hasPermission && state.page != Page.SETTINGS && state.page != Page.MCP) Bars(state, actions) { toAlbum = it; naming = false }
+        if (hasPermission && state.page != Page.SETTINGS) Bars(state, actions) { toAlbum = it; naming = false }
     }
     toAlbum?.let { items ->
         val folders = state.albums.second.map { it.name }

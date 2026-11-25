@@ -151,25 +151,20 @@ class MainActivity : FragmentActivity() {
                     openVault = { VaultLock.ask(this, { state.unlockVault() }) { say(getString(R.string.vault_needs_lock)) } },
                     unhide = { list -> scope.launch { vault.restore(list).let { n -> say(resources.getQuantityString(R.plurals.unhidden, n, n)) }; reload() } },
                     eraseHidden = { list -> scope.launch { vault.erase(list); reload() } },
-                    copyLink = { link ->
-                        getSystemService(android.content.ClipboardManager::class.java)
-                            ?.setPrimaryClip(android.content.ClipData.newPlainText("Luma MCP", link))
-                        say(getString(R.string.copied))
-                    },
-                    goToHub = {
-                        getSystemService(android.content.ClipboardManager::class.java)
-                            ?.setPrimaryClip(android.content.ClipData.newPlainText("Luma › Gateway Hub", McpMode.hubLink()))
-                        val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
-                        if (open != null) startActivity(open) else say(getString(R.string.mcp_paste_in_hub))
-                    },
+                    openArka = ::openArka,
                     indexNow = { IndexWorker.runNow(this) },
                     stopIndex = { IndexWorker.stop(this) },
                     clearIndex = { scope.launch { withContext(Dispatchers.IO) { facts.clear() }; reload() } },
                 ), IndexStatus(state.facts.size.coerceAtMost(state.media.size), state.media.size, running), BuildConfigVersion.name(this)) {
                     Group(androidx.compose.ui.res.stringResource(R.string.mcp_title)) {
-                        androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.mcp_settings_hint))
-                        androidx.compose.material3.Button({ state.go(app.luma.gallery.ui.Page.MCP) }) {
-                            androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.mcp_open))
+                        androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(when {
+                            !McpMode.remote -> R.string.mcp_status_off
+                            McpMode.state == app.luma.gallery.mcp.RelayLink.State.ONLINE -> R.string.mcp_online
+                            McpMode.state == app.luma.gallery.mcp.RelayLink.State.CONNECTING -> R.string.mcp_connecting
+                            else -> R.string.mcp_offline
+                        }) + " · " + androidx.compose.ui.res.stringResource(R.string.mcp_settings_hint))
+                        androidx.compose.material3.Button(::openArka) {
+                            androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.mcp_open_arka))
                         }
                     }
                     Group(androidx.compose.ui.res.stringResource(R.string.theme)) {
@@ -181,6 +176,12 @@ class MainActivity : FragmentActivity() {
     }
 
     /** Leaving Luma closes the vault: the lock is asked again next time. */
+    /** «Modo MCP» in Ajustes: it is turned on, allowed on the phone and given tokens in Arka, so this opens Arka. */
+    private fun openArka() {
+        val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
+        if (open != null) startActivity(open) else android.widget.Toast.makeText(this, R.string.mcp_no_arka, android.widget.Toast.LENGTH_LONG).show()
+    }
+
     override fun onStop() { super.onStop(); lockOnStop?.invoke() }
     var lockOnStop: (() -> Unit)? = null
 

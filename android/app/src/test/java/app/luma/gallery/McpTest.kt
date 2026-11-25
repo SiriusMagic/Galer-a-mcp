@@ -6,7 +6,6 @@ import app.luma.gallery.index.Facts
 import app.luma.gallery.mcp.Access
 import app.luma.gallery.mcp.GalleryData
 import app.luma.gallery.mcp.HubLink
-import app.luma.gallery.mcp.Kind
 import app.luma.gallery.mcp.McpHandler
 import app.luma.gallery.mcp.McpMode
 import app.luma.gallery.mcp.Reply
@@ -35,10 +34,9 @@ class McpTest {
         override fun favorites() = favs
         override fun setFavorite(key: String, on: Boolean) { favs = if (on) favs + key else favs - key }
     }
-    private val reader = Token("r", "Claude", "lum_" + "r".repeat(40), Access.READ, Kind.HUB, "Hub de casa")
-    private val writer = Token("w", "ChatGPT", "lum_" + "w".repeat(40), Access.WRITE)
-    private val paused = Token("p", "Old", "lum_" + "p".repeat(40), Access.WRITE, paused = true)
-    private val handler = McpHandler({ listOf(reader, writer, paused) }, data, "0.5.0")
+    private val reader = Token("lum_" + "r".repeat(40), Access.READ)
+    private val writer = Token("lum_" + "w".repeat(40), Access.WRITE)
+    private val handler = McpHandler({ listOf(reader, writer) }, data, "0.5.0")
 
     private fun call(token: Token?, method: String, params: JSONObject = JSONObject(), query: Map<String, String> = emptyMap()): Reply = runBlocking {
         val headers = token?.let { mapOf("Authorization" to "Bearer ${it.secret}") }.orEmpty()
@@ -49,7 +47,7 @@ class McpTest {
 
     @Test fun onlyValidTokensGetIn() {
         assertEquals(401, call(null, "ping").status)
-        assertEquals(401, call(paused, "ping").status)
+        assertEquals(401, call(Token("wrong_" + "x".repeat(40)), "ping").status)
         assertEquals(200, call(null, "ping", query = mapOf("token" to reader.secret)).status)     // ?token= like Stone's links
         assertEquals(405, runBlocking { handler.handle("GET", "/mcp", mapOf("x-api-key" to reader.secret), emptyMap(), "") }.status)
         assertEquals(202, runBlocking { handler.handle("POST", "/mcp", mapOf("x-api-key" to reader.secret), emptyMap(), """{"jsonrpc":"2.0","method":"notifications/initialized"}""") }.status)
@@ -57,7 +55,7 @@ class McpTest {
 
     @Test fun initializeTellsTheHubWhichTokenItIsAndToolsFollowTheAccess() {
         val meta = result(call(reader, "initialize")).getJSONObject("_meta").getJSONObject(McpHandler.TOKEN_META)
-        assertEquals("hub", meta.getString("kind")); assertEquals("Hub de casa", meta.getString("usage")); assertEquals("read", meta.getString("mode"))
+        assertEquals("redirect", meta.getString("kind")); assertEquals("Arka", meta.getString("name")); assertEquals("read", meta.getString("mode"))
         assertFalse(meta.toString().contains(reader.secret))
         val readTools = result(call(reader, "tools/list")).getJSONArray("tools").toString()
         assertTrue(readTools.contains("gallery_search")); assertFalse(readTools.contains("gallery_favorite"))
@@ -110,32 +108,41 @@ class McpTest {
     @Test fun theHubGetsTheLinkOnlyFromTheSameDeveloperWithTheSwitchOn() {
         McpMode.load(androidx.test.core.app.ApplicationProvider.getApplicationContext())
         assertEquals("NOT_SAME_DEVELOPER", HubLink.answer(false).getString("error"))
-        McpMode.redirect(false)
+        McpMode.turnRemote(false)
         assertEquals("REDIRECT_OFF", HubLink.answer(true).getString("error"))
-        // «Conectar todas» and Lucía's tools: only for the same developer, and tools only with «Redireccionar a Hub» on.
         assertEquals("NOT_SAME_DEVELOPER", HubLink.connect(false).getString("error"))
         assertEquals("NOT_SAME_DEVELOPER", HubLink.tool(false, "{}").getString("error"))
-        assertEquals("REDIRECT_OFF", HubLink.tool(true, "{}").getString("error"))
-        McpMode.redirect(true)
+        // Only the same developer (Arka) may connect, disconnect, read the status or run a tool.
+        listOf(HubLink.disconnect(false), HubLink.status(false)).forEach { assertEquals("NOT_SAME_DEVELOPER", it.getString("error")) }
+        McpMode.turnRemote(true)
         val link = HubLink.answer(true).getString("link")!!
         assertTrue(link.matches(Regex("https://.+/d/[a-f0-9]{24}/mcp\\?token=lum_.+")))
-        assertEquals(listOf(Kind.REDIRECT), McpMode.served().map { it.kind })                      // the user's tokens wait
-        McpMode.redirect(false)
+        McpMode.turnRemote(false)
     }
 
-    /** Lucía runs a tool on the phone through the same handler, only while «Redireccionar a Hub» is on. */
+    /** Lucía runs a tool on the phone through the same handler, with or without the public link; Arka turns that on and off. */
     @Test fun luciaRunsToolsOnThePhone() {
         val relay = app.luma.gallery.mcp.McpMode.relayUrl
         app.luma.gallery.mcp.McpMode.relayUrl = ""                                             // no relay in tests
         app.luma.gallery.mcp.McpMode.load(org.robolectric.RuntimeEnvironment.getApplication())
-        app.luma.gallery.mcp.McpMode.redirect(false)
-        assertEquals(null, app.luma.gallery.mcp.McpMode.local("{}"))
-        HubLink.connect(true); assertTrue(app.luma.gallery.mcp.McpMode.hubRedirect)                // «Conectar todas»
+        app.luma.gallery.mcp.McpMode.turnRemote(false)
         val list = JSONObject(app.luma.gallery.mcp.McpMode.local("""{"jsonrpc":"2.0","id":1,"method":"tools/list"}""")!!)
         assertTrue(list.getJSONObject("result").getJSONArray("tools").length() > 0)
         val viaProvider = JSONObject(HubLink.tool(true, """{"jsonrpc":"2.0","id":2,"method":"tools/list"}""").getString("response"))
         assertEquals(2, viaProvider.getInt("id"))
-        app.luma.gallery.mcp.McpMode.redirect(false)
+        assertEquals("BAD_REQUEST", HubLink.tool(true, "").getString("error"))
+        assertEquals("NOT_SAME_DEVELOPER", HubLink.tool(false, "{}").getString("error"))
+        assertTrue(HubLink.status(true).containsKey("remote"))
+        HubLink.connect(true); assertTrue(app.luma.gallery.mcp.McpMode.remote)                 // Arka › «Activar MCP»
+        assertFalse(HubLink.disconnect(true).getBoolean("remote")); assertFalse(app.luma.gallery.mcp.McpMode.remote)
         app.luma.gallery.mcp.McpMode.relayUrl = relay                                          // as the other tests expect
+    }
+
+    /** The hub's token from before Arka took over is kept, so the hub's link keeps working. */
+    @Test fun theOldHubTokenIsKept() {
+        val old = """[{"id":"a","secret":"${"l".repeat(44)}","kind":"llm"},{"id":"b","secret":"${"h".repeat(44)}","kind":"redirect"}]"""
+        assertEquals("h".repeat(44), app.luma.gallery.mcp.Legacy.redirectSecret(old))
+        assertEquals(null, app.luma.gallery.mcp.Legacy.redirectSecret("[]"))
+        assertEquals(null, app.luma.gallery.mcp.Legacy.redirectSecret(""))
     }
 }
