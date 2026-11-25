@@ -77,6 +77,30 @@ class MediaWriter(private val context: Context) {
         } catch (e: Exception) { resolver.delete(target, null, null); throw e }
     }
 
+    /**
+     * «Editar › Guardar»: [picture] as a new JPEG next to [original] (same folder), named «… editada». The original is
+     * never touched. Returns the new item's folder, or null if it could not be written.
+     */
+    suspend fun saveEdited(original: Media, picture: Bitmap): String? = withContext(Dispatchers.IO) {
+        val folder = runCatching {
+            resolver.query(original.uri, arrayOf(MediaStore.MediaColumns.RELATIVE_PATH), null, null, null)?.use { c ->
+                if (c.moveToFirst()) c.getString(0)?.trimEnd('/') else null
+            }
+        }.getOrNull()?.takeIf { it.startsWith(Environment.DIRECTORY_DCIM) || it.startsWith(Environment.DIRECTORY_PICTURES) }
+            ?: (Environment.DIRECTORY_PICTURES + "/Luma")
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, Library.editedName(original.name))
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "$folder/"); put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
+        val target = runCatching { resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values) }.getOrNull() ?: return@withContext null
+        runCatching {
+            resolver.openOutputStream(target).use { out -> check(picture.compress(Bitmap.CompressFormat.JPEG, 95, requireNotNull(out))) }
+            resolver.update(target, ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }, null, null)
+            folder.substringAfterLast('/')
+        }.getOrElse { resolver.delete(target, null, null); null }
+    }
+
     fun mime(item: Media): String = resolver.getType(item.uri) ?: if (item.isVideo) "video/mp4" else "image/jpeg"
 
     private fun fit(bitmap: Bitmap, w: Int, h: Int): Rect {

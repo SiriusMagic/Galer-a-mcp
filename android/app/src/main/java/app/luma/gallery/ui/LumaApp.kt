@@ -63,10 +63,21 @@ import app.luma.gallery.ui.screens.*
     }
     state.viewing?.let { item ->
         Viewer(state.visible.ifEmpty { listOf(item) }, item, state.favorites, state.facts,
-            ViewerActions(state::toggleFavorite, { actions.share(listOf(it)) }, actions.edit, actions.trash?.let { t -> { m -> t(listOf(m)) } },
+            ViewerActions(state::toggleFavorite, { actions.share(listOf(it)) }, { if (it.isVideo) actions.edit(it) else state.editing = it }, actions.trash?.let { t -> { m -> t(listOf(m)) } },
                 actions.wallpaper, actions.copyClipboard, actions.openWith, toAlbum = { toAlbum = listOf(it); naming = false },
                 hide = { actions.hide(listOf(it)) }, pdf = { actions.pdf(listOf(it)) }),
             onShowing = { state.viewing = it }, onClose = { state.viewing = null })
+    }
+    state.editing?.let { item -> Editor(item, actions) { state.editing = null } }
+}
+
+/** «Editar» over everything (the viewer stays below); a saved copy closes it. */
+@Composable private fun Editor(item: Media, actions: GalleryActions, onClose: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    val editor = remember(item.key) { app.luma.gallery.ui.edit.EditorState(scope) }
+    LaunchedEffect(item.key) { actions.loadEdit(item)?.let(editor::start) ?: onClose() }
+    androidx.compose.ui.window.Dialog(onClose, androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        app.luma.gallery.ui.edit.EditorScreen(editor, onClose) { actions.saveEdit(item, it) }
     }
 }
 

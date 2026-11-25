@@ -1,3 +1,17 @@
+# Luma 0.8.0
+
+- **Editar fotos dentro de Galería** (el lápiz del visor; los videos siguen abriéndose en otra app):
+  - **Estudio IA**: «Mejorar» (luz y color según la propia foto) y «Nitidez». Se calcula en el teléfono, sin internet.
+  - **Recortar**: Libre, 1:1, 4:3, 3:4, 16:9 y 9:16; girar y espejo.
+  - **Ajustes**: brillo, contraste, saturación y calidez.
+  - **Filtros**: Original, Vivo, B/N, Sepia, Frío, Cálido, Retro y Noir, cada uno sobre una miniatura de tu foto.
+  - **Dibujar**: cinco grosores, blanco y doce colores, y borrador, a mano, puntos, línea, línea discontinua, flecha,
+    óvalo y rectángulo.
+  - **Mosaico**: tapa con cuadros lo que no quieras que se vea, con el dedo.
+  - **Texto**: escribe, elige color y tamaño, y arrástralo a su sitio.
+  - Cada apartado con ✕ (descarta) y ✓ (aplica); «Deshacer» arriba. **Guardar copia** crea un JPEG nuevo («… editada») en
+    la misma carpeta: la foto original nunca se toca.
+
 # Luma 0.7.0
 
 - **Iconos nuevos**: el mismo paisaje pintado cinco veces, **Acuarela** (el de fábrica), Píxel, Pastel, Vitral y Óleo, en

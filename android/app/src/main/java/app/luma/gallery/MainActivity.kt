@@ -107,6 +107,16 @@ class MainActivity : FragmentActivity() {
                     restore = { if (Build.VERSION.SDK_INT >= 30) ask(MediaStore.createTrashRequest(contentResolver, uris(it), false)) },
                     deleteForever = { if (Build.VERSION.SDK_INT >= 30) ask(MediaStore.createDeleteRequest(contentResolver, uris(it))) },
                     edit = { open(Intent.ACTION_EDIT, it) },
+                    loadEdit = { item ->
+                        withContext(Dispatchers.IO) { runCatching { app.luma.gallery.edit.Render.load(contentResolver, item.uri) }.getOrNull() }
+                            .also { if (it == null) say(getString(R.string.edit_load_failed)) }
+                    },
+                    saveEdit = { item, picture ->
+                        val folder = writer.saveEdited(item, picture)
+                        say(if (folder != null) getString(R.string.edit_saved, folder) else getString(R.string.edit_save_failed))
+                        if (folder != null) reload()
+                        folder != null
+                    },
                     wallpaper = { open(Intent.ACTION_ATTACH_DATA, it) },
                     openWith = { item -> opening = item to Openers.find(this, item) },
                     copyClipboard = {

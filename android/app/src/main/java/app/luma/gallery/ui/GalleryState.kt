@@ -26,6 +26,8 @@ class GalleryState(favorites: Set<String> = emptySet(), private val saveFavorite
     var album by mutableStateOf<String?>(null); private set
     var query by mutableStateOf("")
     var viewing by mutableStateOf<Media?>(null)
+    /** The photo open in «Editar». */
+    var editing by mutableStateOf<Media?>(null)
     /** The vault's contents, and whether the phone's lock was confirmed (it closes again when leaving it). */
     var hidden by mutableStateOf(emptyList<Hidden>()); private set
     var vaultOpen by mutableStateOf(false); private set

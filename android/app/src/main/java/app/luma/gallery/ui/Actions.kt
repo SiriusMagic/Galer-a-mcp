@@ -9,7 +9,11 @@ class GalleryActions(
     val trash: ((List<Media>) -> Unit)? = null,
     val restore: (List<Media>) -> Unit = {},
     val deleteForever: (List<Media>) -> Unit = {},
+    /** Videos: edit in another app. Photos open Luma's own editor. */
     val edit: (Media) -> Unit = {},
+    /** The editor: the photo ready to edit (null if it cannot be read), and saving a copy (true when saved). */
+    val loadEdit: suspend (Media) -> android.graphics.Bitmap? = { null },
+    val saveEdit: suspend (Media, android.graphics.Bitmap) -> Boolean = { _, _ -> false },
     val wallpaper: (Media) -> Unit = {},
     val copyClipboard: (Media) -> Unit = {},
     val openWith: (Media) -> Unit = {},

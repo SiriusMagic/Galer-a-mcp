@@ -69,6 +69,9 @@ object Library {
     fun safeName(name: String): String = name.replace(Regex("[\\\\/:*?\"<>|\\p{Cntrl}]"), " ").replace(Regex("\\s+"), " ")
         .trim().trim('.').take(60).ifBlank { "Luma" }
 
+    /** «IMG_001.heic» → «IMG_001 editada.jpg» (the editor always saves JPEG; Android adds « (1)» if it already exists). */
+    fun editedName(original: String): String = safeName(original.substringBeforeLast('.').ifBlank { "Foto" }).take(50) + " editada.jpg"
+
     fun toggle(favorites: Set<String>, item: Media): Set<String> =
         if (item.key in favorites) favorites - item.key else favorites + item.key
 }

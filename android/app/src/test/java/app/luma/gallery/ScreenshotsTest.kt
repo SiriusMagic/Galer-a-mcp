@@ -19,6 +19,7 @@ import app.luma.gallery.ui.theme.LumaTheme
 import com.github.takahirom.roborazzi.captureRoboImage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,6 +83,40 @@ class ScreenshotsTest {
         compose.onNodeWithText("Acuarela").assertExists()
         compose.onNodeWithText("Óleo").assertExists()
         onView(isRoot()).captureRoboImage("build/screenshots/luma-icons.png")
+    }
+
+    /** «Editar»: the sections, then «Dibujar» with a few marks, «Recortar» and «Filtros» on a made-up photo. */
+    @Test fun editor() {
+        val photo = android.graphics.Bitmap.createBitmap(1200, 900, android.graphics.Bitmap.Config.ARGB_8888).also { b ->
+            val c = android.graphics.Canvas(b)
+            c.drawColor(0xFF2A4F7A.toInt())
+            c.drawCircle(400f, 330f, 150f, android.graphics.Paint().apply { color = 0xFFF2B33D.toInt() })
+            c.drawRect(0f, 620f, 1200f, 900f, android.graphics.Paint().apply { color = 0xFF2E7D4F.toInt() })
+        }
+        val e = app.luma.gallery.ui.edit.EditorState(kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined), kotlinx.coroutines.Dispatchers.Unconfined)
+        e.start(photo)
+        compose.setContent { LumaTheme(dark = true) { app.luma.gallery.ui.edit.EditorScreen(e, {}) { true } } }
+        compose.onNodeWithText("Estudio IA").assertExists()
+        compose.onNodeWithText("Mosaico").assertExists()
+        compose.waitForIdle(); onView(isRoot()).captureRoboImage("build/screenshots/luma-edit.png")
+        compose.onNodeWithText("Dibujar").performClick()
+        e.down(app.luma.gallery.edit.Pt(0.2f, 0.75f)); e.drag(app.luma.gallery.edit.Pt(0.5f, 0.55f)); e.drag(app.luma.gallery.edit.Pt(0.8f, 0.8f)); e.up()
+        e.brush = app.luma.gallery.edit.Brush.ARROW
+        e.down(app.luma.gallery.edit.Pt(0.75f, 0.2f)); e.drag(app.luma.gallery.edit.Pt(0.45f, 0.35f)); e.up()
+        e.brush = app.luma.gallery.edit.Brush.RECT
+        e.down(app.luma.gallery.edit.Pt(0.15f, 0.15f)); e.drag(app.luma.gallery.edit.Pt(0.5f, 0.6f)); e.up()
+        compose.onNodeWithContentDescription("Rectángulo").assertExists()
+        compose.waitForIdle(); onView(isRoot()).captureRoboImage("build/screenshots/luma-edit-draw.png")
+        compose.onNodeWithContentDescription("Cancelar").performClick()
+        compose.onNodeWithText("Recortar").performClick()
+        compose.onNodeWithText("1:1").performClick()
+        assertEquals(app.luma.gallery.edit.Aspect.SQUARE, e.aspect)
+        compose.waitForIdle(); onView(isRoot()).captureRoboImage("build/screenshots/luma-edit-crop.png")
+        compose.onNodeWithContentDescription("Cancelar").performClick()
+        compose.onNodeWithText("Filtros").performClick()
+        compose.onNodeWithText("Sepia").performClick()
+        assertEquals(app.luma.gallery.edit.Filter.SEPIA, e.filter)
+        compose.waitForIdle(); onView(isRoot()).captureRoboImage("build/screenshots/luma-edit-filters.png")
     }
 
     @Test fun askForAccessFirst() {
