@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Luma</string>
+    <string name="app_name" translatable="false">Galería</string>
     <string name="photos">Fotos</string>
     <string name="albums">Álbumes</string>
     <string name="search">Buscar</string>
@@ -15,7 +15,7 @@
     <string name="delete">Borrar</string>
     <string name="play">Reproducir</string>
     <string name="permission_title">Tus fotos se quedan en tu teléfono</string>
-    <string name="permission_text">Luma necesita permiso para mostrar tus fotos y videos. No tiene acceso a internet ni publicidad.</string>
+    <string name="permission_text">Galería necesita permiso para mostrar tus fotos y videos. No tiene acceso a internet ni publicidad.</string>
     <string name="permission_button">Dar acceso a mis fotos</string>
     <string name="select">Seleccionar todo</string>
     <string name="settings">Ajustes</string>
@@ -31,7 +31,7 @@
     <string name="album_videos">Videos</string>
     <string name="album_screenshots">Capturas de pantalla</string>
     <string name="index_title">Búsqueda inteligente</string>
-    <string name="index_hint">Luma mira tus fotos dentro del teléfono (sin internet) para que busques por lo que aparece: «perro», «playa», «recibo». Se hace sola cuando el teléfono se está cargando y la pantalla está apagada.</string>
+    <string name="index_hint">Galería mira tus fotos dentro del teléfono (sin internet) para que busques por lo que aparece: «perro», «playa», «recibo». Se hace sola cuando el teléfono se está cargando y la pantalla está apagada.</string>
     <string name="index_now">Analizar ahora</string>
     <string name="index_stop">Detener</string>
     <string name="index_clear">Borrar análisis</string>
@@ -63,7 +63,7 @@
     <string name="detail_size">Tamaño</string>
     <string name="detail_resolution">Resolución</string>
     <string name="detail_duration">Duración</string>
-    <string name="detail_seen">Luma ve</string>
+    <string name="detail_seen">Galería ve</string>
     <string name="detail_text">Texto en la imagen</string>
     <string name="detail_not_yet">Aún sin analizar</string>
     <string name="detail_nothing">Nada reconocible</string>
@@ -125,7 +125,7 @@
     <string name="mcp_settings_hint">Deja que tu IA (Claude, ChatGPT…) busque en tus fotos sin verlas, con un enlace y un token.</string>
     <string name="mcp_open">Abrir Modo MCP</string>
     <string name="mcp_enable">Activar MCP</string>
-    <string name="mcp_enable_hint">Funciona mientras Luma esté abierta o en segundo plano.</string>
+    <string name="mcp_enable_hint">Funciona mientras Galería esté abierta o en segundo plano.</string>
     <string name="mcp_enable_by_hub">Lo gestiona Gateway Hub mientras «Redireccionar a Hub» esté activado.</string>
     <string name="mcp_online">Conectado a internet</string>
     <string name="mcp_connecting">Conectando…</string>
@@ -160,7 +160,6 @@
     <string name="open_with_ours">Recomendado · mismo desarrollador</string>
     <string name="clear_search">Limpiar búsqueda</string>
     <string name="icon_title">Icono de la app</string>
-    <string name="icon_original">Original</string>
     <string name="icon_light">Claro</string>
     <string name="icon_gold">Dorado</string>
     <string name="icon_blue">Azul</string>

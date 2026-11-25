@@ -1,5 +1,4 @@
 <resources>
-    <color name="launcher_background">#000000</color>
     <!-- The other launcher icons (Ajustes › Icono de la app). -->
     <color name="launcher_background_light">#F2F2F2</color>
     <color name="launcher_background_gold">#F5C518</color>

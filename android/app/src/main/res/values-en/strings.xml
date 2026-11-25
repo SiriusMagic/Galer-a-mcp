@@ -14,7 +14,7 @@
     <string name="delete">Delete</string>
     <string name="play">Play</string>
     <string name="permission_title">Your photos stay on your phone</string>
-    <string name="permission_text">Luma needs permission to show your photos and videos. It has no internet access and no ads.</string>
+    <string name="permission_text">Gallery needs permission to show your photos and videos. It has no internet access and no ads.</string>
     <string name="permission_button">Allow access to my photos</string>
     <string name="select">Select all</string>
     <string name="settings">Settings</string>
@@ -30,7 +30,7 @@
     <string name="album_videos">Videos</string>
     <string name="album_screenshots">Screenshots</string>
     <string name="index_title">Smart search</string>
-    <string name="index_hint">Luma looks at your photos on the phone (no internet) so you can search by what they show: “dog”, “beach”, “receipt”. It runs by itself while the phone charges with the screen off.</string>
+    <string name="index_hint">Gallery looks at your photos on the phone (no internet) so you can search by what they show: “dog”, “beach”, “receipt”. It runs by itself while the phone charges with the screen off.</string>
     <string name="index_now">Analyze now</string>
     <string name="index_stop">Stop</string>
     <string name="index_clear">Forget analysis</string>
@@ -60,7 +60,7 @@
     <string name="detail_size">Size</string>
     <string name="detail_resolution">Resolution</string>
     <string name="detail_duration">Length</string>
-    <string name="detail_seen">Luma sees</string>
+    <string name="detail_seen">Gallery sees</string>
     <string name="detail_text">Text in the image</string>
     <string name="detail_not_yet">Not analyzed yet</string>
     <string name="detail_nothing">Nothing recognizable</string>
@@ -117,7 +117,7 @@
     <string name="mcp_settings_hint">Let your AI (Claude, ChatGPT…) search your photos without seeing them, with a link and a token.</string>
     <string name="mcp_open">Open MCP mode</string>
     <string name="mcp_enable">Turn on MCP</string>
-    <string name="mcp_enable_hint">Works while Luma is open or in the background.</string>
+    <string name="mcp_enable_hint">Works while Gallery is open or in the background.</string>
     <string name="mcp_enable_by_hub">Managed by Gateway Hub while «Redirect to Hub» is on.</string>
     <string name="mcp_online">Connected to the internet</string>
     <string name="mcp_connecting">Connecting…</string>
@@ -152,7 +152,6 @@
     <string name="open_with_ours">Recommended · same developer</string>
     <string name="clear_search">Clear search</string>
     <string name="icon_title">App icon</string>
-    <string name="icon_original">Original</string>
     <string name="icon_light">Light</string>
     <string name="icon_gold">Gold</string>
     <string name="icon_blue">Blue</string>

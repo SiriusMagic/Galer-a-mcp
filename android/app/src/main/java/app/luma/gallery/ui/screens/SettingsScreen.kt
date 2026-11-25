@@ -35,7 +35,7 @@ import app.luma.gallery.ui.IndexStatus
                 TextButton(onClear, enabled = status.analyzed > 0) { Text(stringResource(R.string.index_clear)) }
             }
         }
-        IconCard(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurface, MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.primary, androidx.compose.ui.graphics.Color(0xFF000000))
+        IconCard(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurface, MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.primary)
         Group(stringResource(R.string.privacy)) { Text(stringResource(R.string.privacy_text), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .7f)) }
         Group(stringResource(R.string.version)) { Text(version) }
     }

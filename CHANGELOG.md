@@ -1,3 +1,9 @@
+# Luma 0.6.4
+
+- **Se llama «Galería»** en la pantalla de inicio y en los textos de la app (el paquete no cambia: se instala encima).
+- **Icono de la app**: se quita «Original» (la foto). Quedan Claro (el de siempre a partir de ahora), Dorado, Azul y
+  Verde. Si tenías «Original», pasa solo a Claro; si tenías Claro, se mantiene.
+
 # Luma 0.6.3
 
 - **Conectar todas** (Gateway Hub 0.0.21): con un toque en el Hub se activa aquí «Redireccionar a Hub» y la app queda

@@ -23,7 +23,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_light"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true">
@@ -36,9 +36,11 @@
             <meta-data android:name="com.zirakusa.gatewayhub.link" android:value="${applicationId}.hublink" />
         </activity>
         <!-- The launcher icon the user picks in Ajustes (one alias enabled at a time). Never rename an alias: Android keeps
-             the enabled state by name, and a renamed one could leave the app without an icon after an update. -->
+             the enabled state by name, and a renamed one could leave the app without an icon after an update.
+             .Home is «Claro» (the default) since 0.6.4; .HomeClaro stays only for phones that had it on, and moves to
+             .Home the first time the app opens (AppIcon.load). -->
         <activity-alias android:name=".Home" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="true" android:icon="@mipmap/ic_launcher">
+            android:enabled="true" android:icon="@mipmap/ic_launcher_light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
