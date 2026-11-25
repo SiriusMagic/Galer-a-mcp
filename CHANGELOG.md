@@ -1,3 +1,12 @@
+# Luma 0.9.0
+
+- **El Modo MCP lo controla Arka**: se quita la pantalla «Modo MCP» (Activar MCP, Redireccionar a Hub, Crear token y la
+  lista de tokens). Activarlo, permitirlo en local y crear tokens se hace desde **Arka › MCP**; Ajustes › Modo MCP solo
+  muestra el estado y abre Arka. Si ya estaba conectada al hub, sigue conectada con el mismo enlace; los tokens LLM y Hub
+  creados aquí dejan de funcionar (créalos en Arka).
+- Lucía usa las herramientas en el teléfono aunque el enlace público esté apagado; lo decide «Permitir MCP local» en Arka.
+- App más ligera: 33,00 MB → 32,96 MB.
+
 # Luma 0.8.0
 
 - **Editar fotos dentro de Galería** (el lápiz del visor; los videos siguen abriéndose en otra app):
