@@ -152,9 +152,10 @@
     <string name="open_with_ours">Recommended · same developer</string>
     <string name="clear_search">Clear search</string>
     <string name="icon_title">App icon</string>
-    <string name="icon_light">Light</string>
-    <string name="icon_gold">Gold</string>
-    <string name="icon_blue">Blue</string>
-    <string name="icon_green">Green</string>
+    <string name="icon_watercolor">Watercolour</string>
+    <string name="icon_pixel">Pixel</string>
+    <string name="icon_pastel">Pastel</string>
+    <string name="icon_glass">Stained glass</string>
+    <string name="icon_oil">Oil</string>
     <string name="icon_hint">Changes the home-screen icon. Some launchers take a few seconds to show it.</string>
 </resources>

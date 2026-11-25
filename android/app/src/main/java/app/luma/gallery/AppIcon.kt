@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -32,22 +33,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * The app's launcher icons: its own drawing in four colour styles, «Claro» by default. Each is an `activity-alias` in the
- * manifest; exactly one is enabled. Alias names never change (Android keeps the enabled state by name): «Claro» lives in
- * `.Home` since 0.6.4, and the old `.HomeClaro` ([LEGACY]) is only moved over and switched off.
+ * The app's launcher icons: one landscape painted five ways, «Acuarela» by default (since 0.7.0). Each is an
+ * `activity-alias` in the manifest; exactly one is enabled. Alias names never change (Android keeps the enabled state by
+ * name): the default lives in `.Home`, the old colour aliases carry the new paintings, «Óleo» has its own, and the old
+ * `.HomeClaro` ([LEGACY], before 0.6.4) is only moved over and switched off.
  */
 enum class AppIcon(val alias: String, val label: Int, val preview: Int, val background: Long) {
-    LIGHT("Home", R.string.icon_light, R.drawable.ic_launcher_foreground_light, 0xFFF2F2F2),
-    GOLD("HomeDorado", R.string.icon_gold, R.drawable.ic_launcher_foreground_gold, 0xFFF5C518),
-    BLUE("HomeAzul", R.string.icon_blue, R.drawable.ic_launcher_foreground_blue, 0xFF1565C0),
-    GREEN("HomeVerde", R.string.icon_green, R.drawable.ic_launcher_foreground_green, 0xFF1B5E20);
+    WATERCOLOR("Home", R.string.icon_watercolor, R.mipmap.ic_launcher_watercolor_foreground, 0xFF1A73D2),
+    PIXEL("HomeDorado", R.string.icon_pixel, R.mipmap.ic_launcher_pixel_foreground, 0xFF0A45B0),
+    PASTEL("HomeAzul", R.string.icon_pastel, R.mipmap.ic_launcher_pastel_foreground, 0xFF227AD1),
+    GLASS("HomeVerde", R.string.icon_glass, R.mipmap.ic_launcher_glass_foreground, 0xFF0B3385),
+    OIL("HomeOleo", R.string.icon_oil, R.mipmap.ic_launcher_oil_foreground, 0xFF0757BA);
 
     private fun component(context: Context) = component(context, alias)
     fun isEnabled(context: Context): Boolean = enabled(context, alias, byDefault = this == DEFAULT)
 
     companion object {
-        val DEFAULT = LIGHT
-        /** «Claro» before 0.6.4: still in the manifest so an update never leaves the phone without an icon. */
+        val DEFAULT = WATERCOLOR
+        /** The default before 0.6.4: still in the manifest so an update never leaves the phone without an icon. */
         const val LEGACY = "HomeClaro"
         var current by mutableStateOf(DEFAULT); private set
 
@@ -59,7 +62,7 @@ enum class AppIcon(val alias: String, val label: Int, val preview: Int, val back
                 else -> false
             }
 
-        /** Reads the enabled one; the old «Claro» alias or none enabled (an odd update) brings back the default. */
+        /** Reads the enabled one; the old alias or none enabled (an odd update) brings back the default. */
         fun load(context: Context) {
             val on = entries.firstOrNull { it.isEnabled(context) }
             if (on == null || enabled(context, LEGACY, byDefault = false)) apply(context, on ?: DEFAULT) else current = on
@@ -77,7 +80,7 @@ enum class AppIcon(val alias: String, val label: Int, val preview: Int, val back
     }
 }
 
-/** «Icono de la app»: the four icons; a tap changes the home-screen icon. */
+/** «Icono de la app»: the five paintings; a tap changes the home-screen icon. */
 @Composable fun IconCard(card: Color, text: Color, muted: Color, accent: Color) {
     val context = LocalContext.current
     Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(card).padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -90,7 +93,7 @@ enum class AppIcon(val alias: String, val label: Int, val preview: Int, val back
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Box(Modifier.size(52.dp).clip(RoundedCornerShape(14.dp)).background(Color(icon.background))
                         .border(if (on) 3.dp else 0.dp, if (on) accent else Color.Transparent, RoundedCornerShape(14.dp)), contentAlignment = Alignment.Center) {
-                        Image(painterResource(icon.preview), null, Modifier.size(52.dp))
+                        Image(painterResource(icon.preview), null, Modifier.requiredSize(72.dp))   // the 108dp layer, cropped like a launcher
                     }
                     Text(name, color = if (on) accent else muted, fontSize = 11.sp, textAlign = TextAlign.Center, maxLines = 1)
                 }

@@ -17,6 +17,8 @@ import app.luma.gallery.ui.IndexStatus
 import app.luma.gallery.ui.Page
 import app.luma.gallery.ui.theme.LumaTheme
 import com.github.takahirom.roborazzi.captureRoboImage
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -67,6 +69,19 @@ class ScreenshotsTest {
         compose.setContent { LumaTheme(dark = true, accent = app.luma.gallery.ui.theme.Accent.OCEANO) { LumaApp(state, true, {}, none) } }
         compose.onNodeWithContentDescription("1 seleccionada").assertExists()
         onView(isRoot()).captureRoboImage("build/screenshots/luma-dark-months.png")
+    }
+
+    /** Ajustes › Icono de la app: the five paintings, «Acuarela» chosen (the default). */
+    @Test fun appIcons() {
+        compose.setContent { LumaTheme(dark = true) {
+            androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.padding(16.dp)) {
+                val c = androidx.compose.material3.MaterialTheme.colorScheme
+                IconCard(c.surfaceVariant, c.onSurface, c.onSurfaceVariant, c.primary)
+            }
+        } }
+        compose.onNodeWithText("Acuarela").assertExists()
+        compose.onNodeWithText("Óleo").assertExists()
+        onView(isRoot()).captureRoboImage("build/screenshots/luma-icons.png")
     }
 
     @Test fun askForAccessFirst() {

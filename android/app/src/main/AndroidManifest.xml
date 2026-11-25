@@ -23,7 +23,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher_light"
+        android:icon="@mipmap/ic_launcher_watercolor"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true">
@@ -37,38 +37,45 @@
         </activity>
         <!-- The launcher icon the user picks in Ajustes (one alias enabled at a time). Never rename an alias: Android keeps
              the enabled state by name, and a renamed one could leave the app without an icon after an update.
-             .Home is «Claro» (the default) since 0.6.4; .HomeClaro stays only for phones that had it on, and moves to
-             .Home the first time the app opens (AppIcon.load). -->
+             .Home is the default icon («Acuarela» since 0.7.0, «Claro» in 0.6.4); .HomeClaro stays only for phones that had it
+             on before 0.6.4, and moves to .Home the first time the app opens (AppIcon.load). -->
         <activity-alias android:name=".Home" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="true" android:icon="@mipmap/ic_launcher_light">
+            android:enabled="true" android:icon="@mipmap/ic_launcher_watercolor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".HomeClaro" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="false" android:icon="@mipmap/ic_launcher_light">
+            android:enabled="false" android:icon="@mipmap/ic_launcher_watercolor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".HomeDorado" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="false" android:icon="@mipmap/ic_launcher_gold">
+            android:enabled="false" android:icon="@mipmap/ic_launcher_pixel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".HomeAzul" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="false" android:icon="@mipmap/ic_launcher_blue">
+            android:enabled="false" android:icon="@mipmap/ic_launcher_pastel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".HomeVerde" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="false" android:icon="@mipmap/ic_launcher_green">
+            android:enabled="false" android:icon="@mipmap/ic_launcher_glass">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".HomeOleo" android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false" android:icon="@mipmap/ic_launcher_oil">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

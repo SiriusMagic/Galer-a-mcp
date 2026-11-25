@@ -1,3 +1,9 @@
+# Luma 0.7.0
+
+- **Iconos nuevos**: el mismo paisaje pintado cinco veces, **Acuarela** (el de fábrica), Píxel, Pastel, Vitral y Óleo, en
+  Ajustes › Icono de la app. Se quitan los anteriores (Claro, Dorado, Azul y Verde); si tenías uno elegido, pasa solo al
+  nuevo que ocupa su lugar.
+
 # Luma 0.6.4
 
 - **Se llama «Galería»** en la pantalla de inicio y en los textos de la app (el paquete no cambia: se instala encima).
