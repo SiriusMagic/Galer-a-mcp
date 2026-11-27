@@ -122,7 +122,7 @@
     <string name="accent_lavender">Lavanda</string>
     <string name="accent_graphite">Grafito</string>
     <string name="mcp_title">Modo MCP</string>
-    <string name="mcp_settings_hint">Lo controla Arka: activarlo, permitirlo en local y crear tokens.</string>
+    <string name="mcp_settings_hint">Configura el acceso local y la redirección a Hub.</string>
     <string name="mcp_online">Conectado a internet</string>
     <string name="mcp_connecting">Conectando…</string>
     <string name="mcp_offline">Sin conexión</string>
@@ -185,7 +185,7 @@
     <string name="brush_arrow">Flecha</string>
     <string name="brush_oval">Óvalo</string>
     <string name="brush_rect">Rectángulo</string>
-    <string name="mcp_no_arka">Instala Arka para activar el Modo MCP.</string>
+    <string name="mcp_no_arka">Instala Arka para administrar los enlaces del Hub.</string>
     <string name="mcp_open_arka">Abrir Arka</string>
     <string name="mcp_status_off">Apagado</string>
 </resources>

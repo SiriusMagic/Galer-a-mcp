@@ -47,7 +47,7 @@ class McpHandler(private val tokens: () -> List<Token>, private val data: Galler
                     "or by the text in them (results include what was recognised, never the image). Ids work with gallery_info. " +
                     if (token.access == Access.READ) "This token is read-only." else "gallery_favorite can mark favorites.")
                 .put("_meta", JSONObject().put(TOKEN_META, JSONObject().put("name", token.name).put("kind", "redirect").put("mode", token.access.key)))
-            "ping" -> JSONObject()
+            "ping" -> McpProbeReceipt.accept(id)
             "tools/list" -> JSONObject().put("tools", JSONArray(GalleryTools.available(token.access).map {
                 JSONObject().put("name", it.name).put("description", it.description).put("inputSchema", it.schema)
                     .put("annotations", JSONObject().put("readOnlyHint", !it.write).put("destructiveHint", false))

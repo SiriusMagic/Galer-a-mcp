@@ -28,6 +28,7 @@ import app.luma.gallery.ui.screens.OpenWithDialog
 import app.luma.gallery.data.Vault
 import app.luma.gallery.index.IndexWorker
 import app.luma.gallery.mcp.McpMode
+import app.luma.gallery.mcp.showMcpOptions
 import app.luma.gallery.index.SqlFacts
 import app.luma.gallery.ui.GalleryActions
 import app.luma.gallery.ui.GalleryState
@@ -176,11 +177,7 @@ class MainActivity : FragmentActivity() {
     }
 
     /** Leaving Luma closes the vault: the lock is asked again next time. */
-    /** «Modo MCP» in Ajustes: it is turned on, allowed on the phone and given tokens in Arka, so this opens Arka. */
-    private fun openArka() {
-        val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
-        if (open != null) startActivity(open) else android.widget.Toast.makeText(this, R.string.mcp_no_arka, android.widget.Toast.LENGTH_LONG).show()
-    }
+    private fun openArka() = showMcpOptions(this)
 
     override fun onStop() { super.onStop(); lockOnStop?.invoke() }
     var lockOnStop: (() -> Unit)? = null
